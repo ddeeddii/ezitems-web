@@ -5,10 +5,52 @@
         <title>EzItems</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     </head>
     <body>
         <script src="main.js" async defer type="module"></script>
+        <button name="button" id="submitBtn">Download</button>
 
-        <button name="button" id="btn">Press me</button>
+        <br> <br>
+
+        <label for="folderName">Folder name:</label>
+        <input type="text" id="folderName" name="folderName">
+
+        <br>
+
+        <label for="modName">Internal mod name:</label>
+        <input type="text" id="modName" name="modName">
+
+        <br><br>
+
+        <button name="button" id="newItemBtn">Add Item</button>
+        
+        <label for="itemType">Item/Trinket:</label>
+        <select name="itemType" id="itemType">
+            <option value="1">Item</option>
+            <option value="2">Trinket</option>
+        </select>
+
+        <br>
+
+        <label for="itemId">Choose item:</label>
+        <select name="itemId" id="itemId">
+        </select>
+        
+        <br>
+
+        <label for="itemName">New item name:</label>
+        <input type="text" id="itemName" name="itemName">
+
+        <br>
+
+        <label for="itemDesc">New item description:</label>
+        <input type="text" id="itemDesc" name="itemDesc">
+
+        <br>
+
+        <label for="img"> New item sprite: </label>
+        <input type="file" id="itemImg" name="img" accept="image/x-png">
+
     </body>
 </html>
