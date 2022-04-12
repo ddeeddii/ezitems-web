@@ -6,11 +6,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <style>
+            table, th, td {
+              border:1px solid black;
+            }
+        </style>
+
     </head>
     <body>
+        <div>
         <script src="main.js" async defer type="module"></script>
         <button name="button" id="submitBtn">Download</button>
-
+        <button name="button" id="chk">View files</button>
         <br> <br>
 
         <label for="folderName">Folder name:</label>
@@ -51,6 +59,24 @@
 
         <label for="img"> New item sprite: </label>
         <input type="file" id="itemImg" name="img" accept="image/x-png">
+        
+        </div>
 
+        <div>
+        <br><br><br>
+
+        <table id='itemTable'>
+            <tr>
+                <th>Type</th>
+                <th>Vanilla Name</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Sprite</th>
+                <th>Actions</th>
+            </tr>
+
+            </table>
+    
+        </div>
     </body>
 </html>

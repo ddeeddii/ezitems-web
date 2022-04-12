@@ -80,6 +80,10 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function (_, player)
 end)
 `
 
+// TODO
+// ui
+
+
 import { downloadZip } from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
 
 import item_gfxs from '/data/item_gfxs.json' assert {type: 'json'};
@@ -128,35 +132,64 @@ function fillItemSelector(type){
 function createLua(name){
   currentLua = template.replace('%NAME%', `"${name}"`)
   mainLuaExist = true
+  $('#modName').prop('readonly', true);
 }
 
-function addItem(type, id, name, desc){
-  // possibly make this only once, then offset off it
-  let i = 0
-  let trinketLine
-  let itemLine
+function appendItemsToLua(){
+  for (const itemObj of files) {
+    if(itemObj == 'ignoreme'){continue}
 
-  let lines = currentLua.split('\n')
-  for (const line of lines){
-    i += 1
-    if(line.includes('--$$$ITEMS-START$$$')){
-      itemLine = i
-    } else if(line.includes('--$$$TRINKETS-STRART$$$')){
-      trinketLine = i
+    const type = itemObj['type']
+    const id = itemObj['id']
+    const name = itemObj['name']
+    const desc = itemObj['desc']
+
+    if (name == '' || desc == ''){
+      alert('item has no item / desc, skipping when compiling lua')
+      continue
     }
-    
-    if(trinketLine != undefined && itemLine != undefined){ break }
+
+    let i = 0
+    let trinketLine
+    let itemLine
+  
+    let lines = currentLua.split('\n')
+    for (const line of lines){
+      i += 1
+      if(line.includes('--$$$ITEMS-START$$$')){
+        itemLine = i
+      } else if(line.includes('--$$$TRINKETS-STRART$$$')){
+        trinketLine = i
+      }
+      
+      if(trinketLine != undefined && itemLine != undefined){ break }
+    }
+  
+    const text = `  {${id}, "${name}", "${desc}"},`
+
+    if(type == ItemType.Item){
+      lines.splice(itemLine, 0, text)
+    } else if(type == ItemType.Trinket){
+      lines.splice(trinketLine, 0, text)
+    }
+  
+    currentLua = lines.join('\n')
   }
 
-  const text = `  {${id}, "${name}", "${desc}"},`
+}
 
-  if(type == ItemType.Item){
-    lines.splice(itemLine, 0, text)
-  } else if(type == ItemType.Trinket){
-    lines.splice(trinketLine, 0, text)
+function compileSprites(){
+  let sprites = []
+
+  for(const itemObj of files){
+    if(itemObj == 'ignoreme'){continue}
+
+    if(itemObj['sprite'] != undefined){
+      sprites.push( itemObj['sprite'] )
+    }
   }
 
-  currentLua = lines.join('\n')
+  return sprites
 }
 
 function clearAllInputs(){
@@ -179,6 +212,8 @@ function validateFileName(filename) {
 }
 // helper funcs end
 
+
+
 $(document).ready(function () {
   //console.log(item_gfxs);
   //console.log(item_names);
@@ -188,6 +223,10 @@ $(document).ready(function () {
   // submit btn callback
   $('#submitBtn').click(function(){
     downloadFinishedZip()
+  })
+
+  $('#chk').click(function(){
+    console.log(files);
   })
 
   // add file callback
@@ -225,11 +264,19 @@ function addFile(){
   const folderName = $('#folderName').val()
   if(folderName == ''){alert('No folder name!'); return}
   if(!validateFileName(folderName)){return}
-  if(currentFolderName == ''){ currentFolderName = folderName} // set folder name for current mod
+  if(currentFolderName == ''){
+    currentFolderName = folderName
+    $('#folderName').prop('readonly', true);
+  } // set folder name for current mod
 
   if(!mainLuaExist){createLua(modName)} // create main.lua if there isnt one
 
+  let itemObj = []
+
   const item = $('#itemId').val()
+  itemObj['type'] = currentType
+  itemObj['id'] = item
+
   const itemImg = $('#itemImg')[0]
   const img = itemImg.files[0]
   if(img != undefined){
@@ -237,18 +284,20 @@ function addFile(){
     if(currentType == ItemType.Item){ gfx = item_gfxs}
     else if(currentType == ItemType.Trinket){ gfx = trinket_gfxs}
 
-    const file = {name: `${currentFolderName}/${currentFolderPath}/${gfx[item]}`,
-                  lastModified: new Date(), input: img}
-
-    files.push(file)
+    const file = {
+      name: `${currentFolderName}/${currentFolderPath}/${gfx[item]}`,
+      lastModified: new Date(),
+      input: img
+    }
+  
+    itemObj['sprite'] = file
+    //files.push(file)
   }
 
   const itemName = $('#itemName').val()
   const itemDesc = $('#itemDesc').val()
-
-  if(item != undefined && itemDesc != undefined){
-    addItem(currentType, item, itemName, itemDesc)
-  }
+  itemObj['name'] = itemName
+  itemObj['desc'] = itemDesc
 
   $('#itemId').val('')
   $('#itemName').val('')
@@ -258,14 +307,116 @@ function addFile(){
   removedOptions[currentType].push(item)
 
   clearFileInput(itemImg)
+
+  console.log('adding to items', itemObj);
+  let idx = files.push(itemObj) - 1
+  addToItemTable(idx)
+}
+
+// this code doenst look good; however i havent found a way to make it better
+function addToItemTable(idx){
+  const table = $('#itemTable')[0]
+  const itemObj = files[idx]
+
+  const type = itemObj['type']
+  const id = itemObj['id']
+  const name = itemObj['name']
+  const desc = itemObj['desc']
+
+  let names
+  if(type == ItemType.Item){ names = item_names}
+  else if(type == ItemType.Trinket){ names = trinket_names}
+
+  let typeStr
+  if(type == ItemType.Item){ typeStr = 'Item'}
+  else if(type == ItemType.Trinket){ typeStr = 'Trinket'}
+
+  let row = table.insertRow(1)
+
+  let actionsCell = row.insertCell()
+  let spriteCell = row.insertCell(0)
+  let descCell = row.insertCell(0)
+  let nameCell = row.insertCell(0)
+  let oldNameCell = row.insertCell(0)
+  let typeCell = row.insertCell(0)
+
+  let btn = document.createElement('button')
+  btn.innerHTML = 'Delete'
+  actionsCell.appendChild(btn)
+
+  if(itemObj['sprite'] != undefined){
+    let img = new Image()
+    img.src = URL.createObjectURL(itemObj['sprite']['input'])
+    img.width = '32'
+    img.height = '32'
+    spriteCell.appendChild(img)
+  }
+
+  descCell.innerHTML = desc
+  nameCell.innerHTML = name
+  oldNameCell.innerHTML = names[id]
+  typeCell.innerHTML = typeStr
+
+  descCell.setAttribute('contenteditable', 'true')
+  nameCell.setAttribute('contenteditable', 'true')
+
+  descCell.addEventListener('input', evt => {
+    files[idx]['desc'] = descCell.innerHTML
+  }, false)
+
+  nameCell.addEventListener('input', evt => {
+    files[idx]['name'] = nameCell.innerHTML
+  }, false)
+
+  btn.addEventListener('click', evt => {
+    files[idx] = 'ignoreme'
+    row.remove()
+  })
+
+  spriteCell.addEventListener('click', evt => {
+    let newSpriteInput = document.createElement('input')
+    newSpriteInput.type = 'file'
+    newSpriteInput.accept = 'image/x-png'
+    newSpriteInput.click()
+
+    newSpriteInput.onchange = () => { 
+      const imgNew = newSpriteInput.files[0];
+
+      let gfx
+      if(type == ItemType.Item){ gfx = item_gfxs}
+      else if(type == ItemType.Trinket){ gfx = trinket_gfxs}
+
+      let path
+      if(type == ItemType.Item){ path = 'resources/gfx/items/collectibles'}
+      else if(type == ItemType.Trinket){ path = 'resources/gfx/items/trinkets'}
+
+      const file = {
+        name: `${currentFolderName}/${path}/${gfx[id]}`,
+        lastModified: new Date(),
+        input: imgNew
+      }
+
+      itemObj['sprite'] = file
+
+      let img = new Image()
+      img.src = URL.createObjectURL(itemObj['sprite']['input'])
+      img.width = '32'
+      img.height = '32'
+      spriteCell.replaceChildren(img)
+   }
+  })
 }
 
 async function downloadFinishedZip() {
-
+  console.log('files', files);
+  let compiledFiles = compileSprites()
+  
+  appendItemsToLua()
   const lua = {name: `${currentFolderName}/main.lua`, lastModified: new Date(), input: currentLua}
-  files.push(lua)
-
-  const blob = await downloadZip(files).blob()
+  compiledFiles.push(lua)
+  
+  console.log('final compfiles:', compiledFiles);
+  const blob = await downloadZip(compiledFiles).blob()
 
   // make and click a temporary link to download the Blob
   const link = document.createElement('a')
@@ -288,6 +439,14 @@ async function downloadFinishedZip() {
 
   $('#modName').val('') // clears mod name
 
-  $("#itemId option").remove(); // clears the dropdown
+  $("#itemId option").remove() // clears the dropdown
   fillItemSelector(currentType)
+
+  // clear the readonly attributes
+  $('#modName').removeAttr('readonly');
+  $('#folderName').removeAttr('readonly');
+
+  // clear table
+  $('#itemTable td').remove()
 }
+
