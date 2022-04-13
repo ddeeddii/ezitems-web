@@ -1,82 +1,80 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>EzItems</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<head>
+		<meta charset="utf-8" />
+		<title>EzItems</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-        <style>
-            table, th, td {
-              border:1px solid black;
-            }
-        </style>
+		<style>
+			table,
+			th,
+			td {
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<script src="main.js" async defer type="module"></script>
+			<button name="button" id="submitBtn">Download</button>
+			<button name="button" id="chk">View files</button>
+			<br />
+			<br />
 
-    </head>
-    <body>
-        <div>
-        <script src="main.js" async defer type="module"></script>
-        <button name="button" id="submitBtn">Download</button>
-        <button name="button" id="chk">View files</button>
-        <br> <br>
+			<label for="folderName">Folder name:</label>
+			<input type="text" id="folderName" name="folderName" />
 
-        <label for="folderName">Folder name:</label>
-        <input type="text" id="folderName" name="folderName">
+			<br />
 
-        <br>
+			<label for="modName">Internal mod name:</label>
+			<input type="text" id="modName" name="modName" />
 
-        <label for="modName">Internal mod name:</label>
-        <input type="text" id="modName" name="modName">
+			<br /><br />
 
-        <br><br>
+			<button name="button" id="newItemBtn">Add Item</button>
 
-        <button name="button" id="newItemBtn">Add Item</button>
-        
-        <label for="itemType">Item/Trinket:</label>
-        <select name="itemType" id="itemType">
-            <option value="1">Item</option>
-            <option value="2">Trinket</option>
-        </select>
+			<label for="itemType">Item/Trinket:</label>
+			<select name="itemType" id="itemType">
+				<option value="1">Item</option>
+				<option value="2">Trinket</option>
+			</select>
 
-        <br>
+			<br />
 
-        <label for="itemId">Choose item:</label>
-        <select name="itemId" id="itemId">
-        </select>
-        
-        <br>
+			<label for="itemId">Choose item:</label>
+			<select name="itemId" id="itemId"></select>
 
-        <label for="itemName">New item name:</label>
-        <input type="text" id="itemName" name="itemName">
+			<br />
 
-        <br>
+			<label for="itemName">New item name:</label>
+			<input type="text" id="itemName" name="itemName" />
 
-        <label for="itemDesc">New item description:</label>
-        <input type="text" id="itemDesc" name="itemDesc">
+			<br />
 
-        <br>
+			<label for="itemDesc">New item description:</label>
+			<input type="text" id="itemDesc" name="itemDesc" />
 
-        <label for="img"> New item sprite: </label>
-        <input type="file" id="itemImg" name="img" accept="image/x-png">
-        
-        </div>
+			<br />
 
-        <div>
-        <br><br><br>
+			<label for="img"> New item sprite: </label>
+			<input type="file" id="itemImg" name="img" accept="image/x-png" />
+		</div>
 
-        <table id='itemTable'>
-            <tr>
-                <th>Type</th>
-                <th>Vanilla Name</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Sprite</th>
-                <th>Actions</th>
-            </tr>
+		<div>
+			<br /><br /><br />
 
-            </table>
-    
-        </div>
-    </body>
+			<table id="itemTable">
+				<tr>
+					<th>Type</th>
+					<th>Vanilla Name</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Sprite</th>
+					<th>Actions</th>
+				</tr>
+			</table>
+		</div>
+	</body>
 </html>

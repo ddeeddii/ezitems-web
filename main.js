@@ -1,5 +1,4 @@
-const template = `
--- Generated with ez-name
+const template = `-- Generated with ez-name
 local mod = RegisterMod(%NAME%, 1)
 
 -- {itemId, 'name', 'desc'}
@@ -83,17 +82,16 @@ end)
 // TODO
 // ui
 
+import {downloadZip} from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
 
-import { downloadZip } from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
-
-import item_gfxs from '/data/item_gfxs.json' assert {type: 'json'};
+import item_gfxs from '/data/item_gfxs.json' assert {type: 'json'}
 import item_names from '/data/item_idtoname.json' assert {type: 'json'}
 import trinket_gfxs from '/data/trinket_gfxs.json' assert {type: 'json'}
 import trinket_names from '/data/trinket_idtoname.json' assert {type: 'json'}
 
 const ItemType = {
-  Item: 1,
-  Trinket: 2
+	Item: 1,
+	Trinket: 2,
 }
 
 let files = []
@@ -103,341 +101,377 @@ let currentType = ItemType.Item
 let currentFolderName = ''
 
 const names = {
-  1: item_names,
-  2: trinket_names
+	1: item_names,
+	2: trinket_names,
 }
 
 const gfxs = {
-  1: item_gfxs,
-  2: trinket_gfxs
+	1: item_gfxs,
+	2: trinket_gfxs,
 }
 
 const path = {
-  1: 'resources/gfx/items/collectibles',
-  2: 'resources/gfx/items/trinkets'
+	1: 'resources/gfx/items/collectibles',
+	2: 'resources/gfx/items/trinkets',
 }
 
 let removedOptions = {
-  1: [],
-  2: []
+	1: [],
+	2: [],
 }
 
 // ================================== Helper functions start
 
-function clearFileInput(input){
-  input.value = ''
+function clearFileInput(input) {
+	input.value = ''
 }
 
-function fillItemSelector(type){
-  let nameType
-  if(type == ItemType.Item){ nameType = item_names; type = 1 }
-  else if(type == ItemType.Trinket){ nameType = trinket_names; type = 2}
+function fillItemSelector(type) {
+	let nameType
+	if (type == ItemType.Item) {
+		nameType = item_names
+		type = 1
+	} else if (type == ItemType.Trinket) {
+		nameType = trinket_names
+		type = 2
+	}
 
-  for (const [id, name] of Object.entries(nameType)) {
-    if(removedOptions[type].includes(id)){continue;} // check if the item was added before
+	for (const [id, name] of Object.entries(nameType)) {
+		if (removedOptions[type].includes(id)) {
+			continue
+		} // check if the item was added before
 
-    $('#itemId').append($('<option>', {
-      value: id,
-      text: `${name} | ${id} `
-    }));
-  }
+		$('#itemId').append(
+			$('<option>', {
+				value: id,
+				text: `${name} | ${id} `,
+			})
+		)
+	}
 }
 
-function createLua(name){
-  currentLua = template.replace('%NAME%', `"${name}"`)
-  $('#modName').prop('readonly', true);
+function createLua(name) {
+	currentLua = template.replace('%NAME%', `"${name}"`)
+	$('#modName').prop('readonly', true)
 }
 
-function appendItemsToLua(){
-  for (const itemObj of files) {
-    if(itemObj == 'ignoreme'){continue}
+function appendItemsToLua() {
+	for (const itemObj of files) {
+		if (itemObj == 'ignoreme') {
+			continue
+		}
 
-    const type = itemObj['type']
-    const id = itemObj['id']
-    const name = itemObj['name']
-    const desc = itemObj['desc']
+		const type = itemObj['type']
+		const id = itemObj['id']
+		const name = itemObj['name']
+		const desc = itemObj['desc']
 
-    if (name == '' || desc == ''){
-      alert('item has no item / desc, skipping when compiling lua')
-      continue
-    }
+		if (name == '' || desc == '') {
+			alert('item has no item / desc, skipping when compiling lua')
+			continue
+		}
 
-    let i = 0
-    let trinketLine
-    let itemLine
-  
-    let lines = currentLua.split('\n')
-    for (const line of lines){
-      i += 1
-      if(line.includes('--$$$ITEMS-START$$$')){
-        itemLine = i
-      } else if(line.includes('--$$$TRINKETS-STRART$$$')){
-        trinketLine = i
-      }
-      
-      if(trinketLine != undefined && itemLine != undefined){ break }
-    }
-  
-    const text = `  {${id}, "${name}", "${desc}"},`
+		let i = 0
+		let trinketLine
+		let itemLine
 
-    if(type == ItemType.Item){
-      lines.splice(itemLine, 0, text)
-    } else if(type == ItemType.Trinket){
-      lines.splice(trinketLine, 0, text)
-    }
-  
-    currentLua = lines.join('\n')
-  }
+		let lines = currentLua.split('\n')
+		for (const line of lines) {
+			i += 1
+			if (line.includes('--$$$ITEMS-START$$$')) {
+				itemLine = i
+			} else if (line.includes('--$$$TRINKETS-STRART$$$')) {
+				trinketLine = i
+			}
 
+			if (trinketLine != undefined && itemLine != undefined) {
+				break
+			}
+		}
+
+		const text = `  {${id}, "${name}", "${desc}"},`
+
+		if (type == ItemType.Item) {
+			lines.splice(itemLine, 0, text)
+		} else if (type == ItemType.Trinket) {
+			lines.splice(trinketLine, 0, text)
+		}
+
+		currentLua = lines.join('\n')
+	}
 }
 
-function compileSprites(){
-  let sprites = []
+function compileSprites() {
+	let sprites = []
 
-  for(const itemObj of files){
-    if(itemObj == 'ignoreme'){continue}
+	for (const itemObj of files) {
+		if (itemObj == 'ignoreme') {
+			continue
+		}
 
-    if(itemObj['sprite'] != undefined){
-      sprites.push( itemObj['sprite'] )
-    }
-  }
+		if (itemObj['sprite'] != undefined) {
+			sprites.push(itemObj['sprite'])
+		}
+	}
 
-  return sprites
+	return sprites
 }
 
-function clearAllInputs(){
-  $('#itemId').val('')
-  $('#itemName').val('')
-  $('#itemDesc').val('')
-  clearFileInput(itemImg)
+function clearAllInputs() {
+	$('#itemId').val('')
+	$('#itemName').val('')
+	$('#itemDesc').val('')
+	clearFileInput(itemImg)
 }
 
 function validateFileName(filename) {
-  const re = /^[^\s^\x00-\x1f\\?*:"";<>|\/.][^\x00-\x1f\\?*:"";<>|\/]*[^\s^\x00-\x1f\\?*:"";<>|\/.]+$/;
+	const re =
+		/^[^\s^\x00-\x1f\\?*:"";<>|\/.][^\x00-\x1f\\?*:"";<>|\/]*[^\s^\x00-\x1f\\?*:"";<>|\/.]+$/
 
-  if (!re.test(filename)) {
-      alert("Error: Invalid folder name!")
-      return false
-  }
+	if (!re.test(filename)) {
+		alert('Error: Invalid folder name!')
+		return false
+	}
 
-  return true
+	return true
 }
 
 // ================================== Helper functions end
 
 $(document).ready(function () {
-  $('#submitBtn').click(function(){ // Download zip button
-    downloadFinishedZip()
-  })
+	$('#submitBtn').click(function () {
+		// Download zip button
+		downloadFinishedZip()
+	})
 
-  $('#chk').click(function(){ //todo Remove
-    console.log(files);
-  })
+	$('#chk').click(function () {
+		//todo Remove
+		console.log(files)
+	})
 
-  $('#newItemBtn').click(function(){ // Add item button
-    addFile()
-  })
+	$('#newItemBtn').click(function () {
+		// Add item button
+		addFile()
+	})
 
-  // Fill item id selector
-  fillItemSelector(ItemType.Item)
+	// Fill item id selector
+	fillItemSelector(ItemType.Item)
 
-  $("#itemType").change(function() {
-    $("#itemId option").remove(); // clears the dropdown
-    clearAllInputs()
+	$('#itemType').change(function () {
+		$('#itemId option').remove() // clears the dropdown
+		clearAllInputs()
 
-    const option = $('option:selected', this).val()
-    if(option == 2){
-      fillItemSelector(ItemType.Trinket)
-      currentType = ItemType.Trinket
+		const option = $('option:selected', this).val()
+		if (option == 2) {
+			fillItemSelector(ItemType.Trinket)
+			currentType = ItemType.Trinket
+		} else if (option == 1) {
+			fillItemSelector(ItemType.Item)
+			currentType = ItemType.Item
+		}
+	})
+})
 
-    } else if(option == 1){
-      fillItemSelector(ItemType.Item)
-      currentType = ItemType.Item
-    }
+function addFile() {
+	const modName = $('#modName').val()
+	if (modName == '') {
+		alert('No mod name!')
+		return
+	}
 
-  });
+	const folderName = $('#folderName').val()
+	if (folderName == '') {
+		alert('No folder name!')
+		return
+	}
+	if (!validateFileName(folderName)) {
+		return
+	}
+	if (currentFolderName == '') {
+		currentFolderName = folderName
+		$('#folderName').prop('readonly', true)
+	} // set folder name for current mod
 
-});
+	if ((currentLua = '')) {
+		createLua(modName)
+	} // create main.lua if there isnt one
 
-function addFile(){
-  const modName = $('#modName').val()
-  if(modName == ''){alert('No mod name!'); return}
+	let itemObj = []
 
-  const folderName = $('#folderName').val()
-  if(folderName == ''){alert('No folder name!'); return}
-  if(!validateFileName(folderName)){return}
-  if(currentFolderName == ''){
-    currentFolderName = folderName
-    $('#folderName').prop('readonly', true);
-  } // set folder name for current mod
+	const item = $('#itemId').val()
+	itemObj['type'] = currentType
+	itemObj['id'] = item
 
-  if(currentLua = ''){createLua(modName)} // create main.lua if there isnt one
+	const itemImg = $('#itemImg')[0]
+	const img = itemImg.files[0]
+	if (img != undefined) {
+		let gfx = gfxs[currentType]
+		const file = {
+			name: `${currentFolderName}/${path[currentType]}/${gfx[item]}`,
+			lastModified: new Date(),
+			input: img,
+		}
 
-  let itemObj = []
+		itemObj['sprite'] = file
+		//files.push(file)
+	}
 
-  const item = $('#itemId').val()
-  itemObj['type'] = currentType
-  itemObj['id'] = item
+	const itemName = $('#itemName').val()
+	const itemDesc = $('#itemDesc').val()
+	itemObj['name'] = itemName
+	itemObj['desc'] = itemDesc
 
-  const itemImg = $('#itemImg')[0]
-  const img = itemImg.files[0]
-  if(img != undefined){
+	$('#itemId').val('')
+	$('#itemName').val('')
+	$('#itemDesc').val('')
 
-    let gfx = gfxs[currentType]
-    const file = {
-      name: `${currentFolderName}/${path[currentType]}/${gfx[item]}`,
-      lastModified: new Date(),
-      input: img
-    }
-  
-    itemObj['sprite'] = file
-    //files.push(file)
-  }
+	$(`#itemId option[value=${item}]`).remove()
+	removedOptions[currentType].push(item)
 
-  const itemName = $('#itemName').val()
-  const itemDesc = $('#itemDesc').val()
-  itemObj['name'] = itemName
-  itemObj['desc'] = itemDesc
+	clearFileInput(itemImg)
 
-  $('#itemId').val('')
-  $('#itemName').val('')
-  $('#itemDesc').val('')
-
-  $(`#itemId option[value=${item}]`).remove();
-  removedOptions[currentType].push(item)
-
-  clearFileInput(itemImg)
-
-  console.log('adding to items', itemObj);
-  let idx = files.push(itemObj) - 1
-  addToItemTable(idx)
+	console.log('adding to items', itemObj)
+	let idx = files.push(itemObj) - 1
+	addToItemTable(idx)
 }
 
 // this code doenst look good; however i havent found a way to make it better
-function addToItemTable(idx){
-  const table = $('#itemTable')[0]
-  const itemObj = files[idx]
+function addToItemTable(idx) {
+	const table = $('#itemTable')[0]
+	const itemObj = files[idx]
 
-  const type = itemObj['type']
-  const id = itemObj['id']
-  const name = itemObj['name']
-  const desc = itemObj['desc']
+	const type = itemObj['type']
+	const id = itemObj['id']
+	const name = itemObj['name']
+	const desc = itemObj['desc']
 
-  let typeStr
-  if(type == ItemType.Item){ typeStr = 'Item'}
-  else if(type == ItemType.Trinket){ typeStr = 'Trinket'}
+	let typeStr
+	if (type == ItemType.Item) {
+		typeStr = 'Item'
+	} else if (type == ItemType.Trinket) {
+		typeStr = 'Trinket'
+	}
 
-  let row = table.insertRow(1)
+	let row = table.insertRow(1)
 
-  let actionsCell = row.insertCell()
-  let spriteCell = row.insertCell(0)
-  let descCell = row.insertCell(0)
-  let nameCell = row.insertCell(0)
-  let oldNameCell = row.insertCell(0)
-  let typeCell = row.insertCell(0)
+	let actionsCell = row.insertCell()
+	let spriteCell = row.insertCell(0)
+	let descCell = row.insertCell(0)
+	let nameCell = row.insertCell(0)
+	let oldNameCell = row.insertCell(0)
+	let typeCell = row.insertCell(0)
 
-  let btn = document.createElement('button')
-  btn.innerHTML = 'Delete'
-  actionsCell.appendChild(btn)
+	let btn = document.createElement('button')
+	btn.innerHTML = 'Delete'
+	actionsCell.appendChild(btn)
 
-  if(itemObj['sprite'] != undefined){
-    let img = new Image()
-    img.src = URL.createObjectURL(itemObj['sprite']['input'])
-    img.width = '32'
-    img.height = '32'
-    spriteCell.appendChild(img)
-  }
+	if (itemObj['sprite'] != undefined) {
+		let img = new Image()
+		img.src = URL.createObjectURL(itemObj['sprite']['input'])
+		img.width = '32'
+		img.height = '32'
+		spriteCell.appendChild(img)
+	}
 
-  descCell.innerHTML = desc
-  nameCell.innerHTML = name
-  oldNameCell.innerHTML = names[type]
-  typeCell.innerHTML = typeStr
+	descCell.innerHTML = desc
+	nameCell.innerHTML = name
+	oldNameCell.innerHTML = names[type]
+	typeCell.innerHTML = typeStr
 
-  descCell.setAttribute('contenteditable', 'true')
-  nameCell.setAttribute('contenteditable', 'true')
+	descCell.setAttribute('contenteditable', 'true')
+	nameCell.setAttribute('contenteditable', 'true')
 
-  descCell.addEventListener('input', evt => {
-    files[idx]['desc'] = descCell.innerHTML
-  }, false)
+	descCell.addEventListener(
+		'input',
+		(evt) => {
+			files[idx]['desc'] = descCell.innerHTML
+		}
+	)
 
-  nameCell.addEventListener('input', evt => {
-    files[idx]['name'] = nameCell.innerHTML
-  }, false)
+	nameCell.addEventListener(
+		'input',
+		(evt) => {
+			files[idx]['name'] = nameCell.innerHTML
+		}
+	)
 
-  btn.addEventListener('click', evt => {
-    files[idx] = 'ignoreme'
-    element.removeEventListener('click', onClick);
-    row.remove()
-  })
+	btn.addEventListener('click', (evt) => {
+		files[idx] = 'ignoreme'
+		element.removeEventListener('click', onClick)
+		row.remove()
+	})
 
-  spriteCell.addEventListener('click', evt => {
-    let newSpriteInput = document.createElement('input')
-    newSpriteInput.type = 'file'
-    newSpriteInput.accept = 'image/x-png'
-    newSpriteInput.click()
+	spriteCell.addEventListener('click', (evt) => {
+		let newSpriteInput = document.createElement('input')
+		newSpriteInput.type = 'file'
+		newSpriteInput.accept = 'image/x-png'
+		newSpriteInput.click()
 
-    newSpriteInput.onchange = () => { 
-      const imgNew = newSpriteInput.files[0];
+		newSpriteInput.onchange = () => {
+			const imgNew = newSpriteInput.files[0]
 
-      const gfx = gfxs[type]
-      const path = path[type]
+			const gfx = gfxs[type]
+			const path = path[type]
 
-      const file = {
-        name: `${currentFolderName}/${path}/${gfx[id]}`,
-        lastModified: new Date(),
-        input: imgNew
-      }
+			const file = {
+				name: `${currentFolderName}/${path}/${gfx[id]}`,
+				lastModified: new Date(),
+				input: imgNew,
+			}
 
-      itemObj['sprite'] = file
+			itemObj['sprite'] = file
 
-      let img = new Image()
-      img.src = URL.createObjectURL(itemObj['sprite']['input'])
-      img.width = '32'
-      img.height = '32'
-      spriteCell.replaceChildren(img)
-   }
-  })
+			let img = new Image()
+			img.src = URL.createObjectURL(itemObj['sprite']['input'])
+			img.width = '32'
+			img.height = '32'
+			spriteCell.replaceChildren(img)
+		}
+	})
 }
 
 async function downloadFinishedZip() {
-  console.log('files', files);
-  let compiledFiles = compileSprites()
-  
-  appendItemsToLua()
-  const lua = {name: `${currentFolderName}/main.lua`, lastModified: new Date(), input: currentLua}
-  compiledFiles.push(lua)
-  
-  console.log('final compfiles:', compiledFiles);
-  const blob = await downloadZip(compiledFiles).blob()
+	console.log('files', files)
+	let compiledFiles = compileSprites()
 
-  // make and click a temporary link to download the Blob
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.download = 'mod.zip'
-  link.click()
-  link.remove()
-  
-  // clear all data
-  files = []
-  currentLua = template
-  removedOptions = {
-    1: [],
-    2: []
-  }
+	appendItemsToLua()
+	const lua = {
+		name: `${currentFolderName}/main.lua`,
+		lastModified: new Date(),
+		input: currentLua,
+	}
+	compiledFiles.push(lua)
 
-  $('#folderName').val('') // clears the folder name
-  currentFolderName = ''
+	console.log('final compfiles:', compiledFiles)
+	const blob = await downloadZip(compiledFiles).blob()
 
-  $('#modName').val('') // clears mod name
+	// make and click a temporary link to download the Blob
+	const link = document.createElement('a')
+	link.href = URL.createObjectURL(blob)
+	link.download = 'mod.zip'
+	link.click()
+	link.remove()
 
-  $("#itemId option").remove() // clears the dropdown
-  fillItemSelector(currentType)
+	// clear all data
+	files = []
+	currentLua = template
+	removedOptions = {
+		1: [],
+		2: [],
+	}
 
-  // clear the readonly attributes
-  $('#modName').removeAttr('readonly');
-  $('#folderName').removeAttr('readonly');
+	$('#folderName').val('') // clears the folder name
+	currentFolderName = ''
 
-  // clear table
-  $('#itemTable td').remove()
+	$('#modName').val('') // clears mod name
+
+	$('#itemId option').remove() // clears the dropdown
+	fillItemSelector(currentType)
+
+	// clear the readonly attributes
+	$('#modName').removeAttr('readonly')
+	$('#folderName').removeAttr('readonly')
+
+	// clear table
+	$('#itemTable td').remove()
 }
-
