@@ -97,19 +97,33 @@ const ItemType = {
 }
 
 let files = []
-let mainLuaExist = false
+
 let currentLua = ''
 let currentType = ItemType.Item
-
 let currentFolderName = ''
-let currentFolderPath = `resources/gfx/items/collectibles`
+
+const names = {
+  1: item_names,
+  2: trinket_names
+}
+
+const gfxs = {
+  1: item_gfxs,
+  2: trinket_gfxs
+}
+
+const path = {
+  1: 'resources/gfx/items/collectibles',
+  2: 'resources/gfx/items/trinkets'
+}
 
 let removedOptions = {
   1: [],
   2: []
 }
 
-// helper funcs start
+// ================================== Helper functions start
+
 function clearFileInput(input){
   input.value = ''
 }
@@ -131,7 +145,6 @@ function fillItemSelector(type){
 
 function createLua(name){
   currentLua = template.replace('%NAME%', `"${name}"`)
-  mainLuaExist = true
   $('#modName').prop('readonly', true);
 }
 
@@ -207,34 +220,25 @@ function validateFileName(filename) {
       return false
   }
 
-  // validation was successful
   return true
 }
-// helper funcs end
 
-
+// ================================== Helper functions end
 
 $(document).ready(function () {
-  //console.log(item_gfxs);
-  //console.log(item_names);
-  //console.log(trinket_gfxs);
-  //console.log(trinket_names);
-  
-  // submit btn callback
-  $('#submitBtn').click(function(){
+  $('#submitBtn').click(function(){ // Download zip button
     downloadFinishedZip()
   })
 
-  $('#chk').click(function(){
+  $('#chk').click(function(){ //todo Remove
     console.log(files);
   })
 
-  // add file callback
-  $('#newItemBtn').click(function(){
+  $('#newItemBtn').click(function(){ // Add item button
     addFile()
   })
 
-  // add to item name selector
+  // Fill item id selector
   fillItemSelector(ItemType.Item)
 
   $("#itemType").change(function() {
@@ -245,12 +249,10 @@ $(document).ready(function () {
     if(option == 2){
       fillItemSelector(ItemType.Trinket)
       currentType = ItemType.Trinket
-      currentFolderPath = 'resources/gfx/items/trinkets'
 
     } else if(option == 1){
       fillItemSelector(ItemType.Item)
       currentType = ItemType.Item
-      currentFolderPath = 'resources/gfx/items/collectibles'
     }
 
   });
@@ -269,7 +271,7 @@ function addFile(){
     $('#folderName').prop('readonly', true);
   } // set folder name for current mod
 
-  if(!mainLuaExist){createLua(modName)} // create main.lua if there isnt one
+  if(currentLua = ''){createLua(modName)} // create main.lua if there isnt one
 
   let itemObj = []
 
@@ -280,12 +282,10 @@ function addFile(){
   const itemImg = $('#itemImg')[0]
   const img = itemImg.files[0]
   if(img != undefined){
-    let gfx
-    if(currentType == ItemType.Item){ gfx = item_gfxs}
-    else if(currentType == ItemType.Trinket){ gfx = trinket_gfxs}
 
+    let gfx = gfxs[currentType]
     const file = {
-      name: `${currentFolderName}/${currentFolderPath}/${gfx[item]}`,
+      name: `${currentFolderName}/${path[currentType]}/${gfx[item]}`,
       lastModified: new Date(),
       input: img
     }
@@ -323,10 +323,6 @@ function addToItemTable(idx){
   const name = itemObj['name']
   const desc = itemObj['desc']
 
-  let names
-  if(type == ItemType.Item){ names = item_names}
-  else if(type == ItemType.Trinket){ names = trinket_names}
-
   let typeStr
   if(type == ItemType.Item){ typeStr = 'Item'}
   else if(type == ItemType.Trinket){ typeStr = 'Trinket'}
@@ -354,7 +350,7 @@ function addToItemTable(idx){
 
   descCell.innerHTML = desc
   nameCell.innerHTML = name
-  oldNameCell.innerHTML = names[id]
+  oldNameCell.innerHTML = names[type]
   typeCell.innerHTML = typeStr
 
   descCell.setAttribute('contenteditable', 'true')
@@ -370,6 +366,7 @@ function addToItemTable(idx){
 
   btn.addEventListener('click', evt => {
     files[idx] = 'ignoreme'
+    element.removeEventListener('click', onClick);
     row.remove()
   })
 
@@ -382,13 +379,8 @@ function addToItemTable(idx){
     newSpriteInput.onchange = () => { 
       const imgNew = newSpriteInput.files[0];
 
-      let gfx
-      if(type == ItemType.Item){ gfx = item_gfxs}
-      else if(type == ItemType.Trinket){ gfx = trinket_gfxs}
-
-      let path
-      if(type == ItemType.Item){ path = 'resources/gfx/items/collectibles'}
-      else if(type == ItemType.Trinket){ path = 'resources/gfx/items/trinkets'}
+      const gfx = gfxs[type]
+      const path = path[type]
 
       const file = {
         name: `${currentFolderName}/${path}/${gfx[id]}`,
@@ -428,7 +420,6 @@ async function downloadFinishedZip() {
   // clear all data
   files = []
   currentLua = template
-  mainLuaExist = false
   removedOptions = {
     1: [],
     2: []
