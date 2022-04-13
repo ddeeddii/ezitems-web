@@ -375,7 +375,7 @@ function addToItemTable(idx) {
 
 	descCell.innerHTML = desc
 	nameCell.innerHTML = name
-	oldNameCell.innerHTML = names[type]
+	oldNameCell.innerHTML = names[type][id]
 	typeCell.innerHTML = typeStr
 
 	descCell.setAttribute('contenteditable', 'true')
