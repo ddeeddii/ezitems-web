@@ -79,9 +79,6 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function (_, player)
 end)
 `
 
-// TODO
-// ui
-
 import {downloadZip} from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
 
 import item_gfxs from '/data/item_gfxs.json' assert {type: 'json'}
@@ -124,6 +121,9 @@ let removedOptions = {
 
 function clearFileInput(input) {
 	input.value = ''
+
+	const fileName = document.querySelector('#imageUpload .file-name')
+	fileName.textContent = 'No sprite selected'
 }
 
 function fillItemSelector(type) {
@@ -244,11 +244,6 @@ $(document).ready(function () {
 		downloadFinishedZip()
 	})
 
-	$('#chk').click(function () {
-		//todo Remove
-		console.log(files)
-	})
-
 	$('#newItemBtn').click(function () {
 		// Add item button
 		addFile()
@@ -365,7 +360,7 @@ function addToItemTable(idx) {
 		typeStr = 'Trinket'
 	}
 
-	let row = table.insertRow(1)
+	let row = table.insertRow(-1)
 
 	let actionsCell = row.insertCell()
 	let spriteCell = row.insertCell(0)
@@ -422,11 +417,8 @@ function addToItemTable(idx) {
 		newSpriteInput.onchange = () => {
 			const imgNew = newSpriteInput.files[0]
 
-			const gfx = gfxs[type]
-			const path = path[type]
-
 			const file = {
-				name: `${currentFolderName}/${path}/${gfx[id]}`,
+				name: `${currentFolderName}/${path[type]}/${gfxs[type][id]}`,
 				lastModified: new Date(),
 				input: imgNew,
 			}
