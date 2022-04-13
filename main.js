@@ -254,6 +254,14 @@ $(document).ready(function () {
 		addFile()
 	})
 
+	const fileInput = document.querySelector('#imageUpload input[type=file]')
+	fileInput.onchange = () => {
+		if (fileInput.files.length > 0) {
+			const fileName = document.querySelector('#imageUpload .file-name')
+			fileName.textContent = fileInput.files[0].name
+		}
+	}
+
 	// Fill item id selector
 	fillItemSelector(ItemType.Item)
 
@@ -321,6 +329,11 @@ function addFile() {
 	itemObj['name'] = itemName
 	itemObj['desc'] = itemDesc
 
+	if (img == undefined && itemName == '' && itemDesc == '') {
+		alert('Item is empty!')
+		return
+	}
+
 	$('#itemId').val('')
 	$('#itemName').val('')
 	$('#itemDesc').val('')
@@ -363,6 +376,12 @@ function addToItemTable(idx) {
 
 	let btn = document.createElement('button')
 	btn.innerHTML = 'Delete'
+
+	// Style
+	btn.classList.add('delete')
+	btn.style.margin = 'auto'
+	btn.style.display = 'block'
+
 	actionsCell.appendChild(btn)
 
 	if (itemObj['sprite'] != undefined) {
@@ -381,23 +400,16 @@ function addToItemTable(idx) {
 	descCell.setAttribute('contenteditable', 'true')
 	nameCell.setAttribute('contenteditable', 'true')
 
-	descCell.addEventListener(
-		'input',
-		(evt) => {
-			files[idx]['desc'] = descCell.innerHTML
-		}
-	)
+	descCell.addEventListener('input', (evt) => {
+		files[idx]['desc'] = descCell.innerHTML
+	})
 
-	nameCell.addEventListener(
-		'input',
-		(evt) => {
-			files[idx]['name'] = nameCell.innerHTML
-		}
-	)
+	nameCell.addEventListener('input', (evt) => {
+		files[idx]['name'] = nameCell.innerHTML
+	})
 
 	btn.addEventListener('click', (evt) => {
 		files[idx] = 'ignoreme'
-		element.removeEventListener('click', onClick)
 		row.remove()
 	})
 

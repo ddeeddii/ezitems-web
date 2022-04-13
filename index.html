@@ -4,32 +4,48 @@
 		<meta charset="utf-8" />
 		<title>EzItems</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+		/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
 	</head>
 	<body>
 		<div>
 			<script src="main.js" async defer type="module"></script>
-			<button name="button" id="submitBtn">Download</button>
+			<button name="button" id="submitBtn" class="button is-danger">
+				Download
+			</button>
 			<button name="button" id="chk">View files</button>
 			<br />
 			<br />
 
 			<label for="folderName">Folder name:</label>
-			<input type="text" id="folderName" name="folderName" />
+			<input
+				type="text"
+				id="folderName"
+				name="folderName"
+				class="input is-danger"
+			/>
 
 			<br />
 
 			<label for="modName">Internal mod name:</label>
-			<input type="text" id="modName" name="modName" />
+			<input
+				type="text"
+				id="modName"
+				name="modName"
+				class="input is-danger"
+			/>
 
 			<br /><br />
 
-			<button name="button" id="newItemBtn">Add Item</button>
+			<button name="button" id="newItemBtn" class="button is-primary">
+				Add Item
+			</button>
 
 			<label for="itemType">Item/Trinket:</label>
-			<select name="itemType" id="itemType">
+			<select name="itemType" id="itemType" class="select is-primary">
 				<option value="1">Item</option>
 				<option value="2">Trinket</option>
 			</select>
@@ -37,22 +53,51 @@
 			<br />
 
 			<label for="itemId">Choose item:</label>
-			<select name="itemId" id="itemId"></select>
+			<select
+				name="itemId"
+				id="itemId"
+				class="select is-primary"
+			></select>
 
 			<br />
 
 			<label for="itemName">New item name:</label>
-			<input type="text" id="itemName" name="itemName" />
+			<input
+				type="text"
+				id="itemName"
+				name="itemName"
+				class="input is-normal is-primary"
+				placeholder="My cool item"
+			/>
 
 			<br />
 
 			<label for="itemDesc">New item description:</label>
-			<input type="text" id="itemDesc" name="itemDesc" />
+			<input
+				type="text"
+				id="itemDesc"
+				name="itemDesc"
+				class="input is-info"
+				placeholder="My cool description"
+			/>
 
 			<br />
 
-			<label for="img"> New item sprite: </label>
-			<input type="file" id="itemImg" name="img" accept="image/x-png" />
+			<div class="file has-name" id="imageUpload">
+				<label class="file-label">
+					<input
+						type="file"
+						id="itemImg"
+						name="img"
+						accept="image/x-png"
+						class="file-input"
+					/>
+					<span class="file-cta">
+						<span class="file-label"> Choose a sprite </span>
+					</span>
+					<span class="file-name"> No sprite selected </span>
+				</label>
+			</div>
 		</div>
 
 		<div>
