@@ -1,4 +1,4 @@
-const template = `-- Generated with ez-name
+const template = `-- Generated with ezitems-web
 local mod = RegisterMod(%NAME%, 1)
 
 -- {itemId, 'name', 'desc'}
@@ -8,13 +8,13 @@ local items = {
 }
 
 local trinkets = {
-  --$$$TRINKETS-STRART$$$
+  --$$$TRINKETS-START$$$
 
 }
 
 local game = Game()
 if EID then
-  -- Adds trinketd defined in trinkets
+  -- Adds trinkets defined in trinkets
 	for _, trinket in ipairs(trinkets) do
 		local EIDdescription = EID:getDescriptionObj(5, 350, trinket[1]).Description
 		EID:addTrinket(trinket[1], EIDdescription, trinket[2], "en_us")
@@ -28,7 +28,7 @@ if EID then
 end
 
 if Encyclopedia then
-  -- Adds trinketd defined in trinkets
+  -- Adds trinkets defined in trinkets
 	for _,trinket in ipairs(trinkets) do
 		Encyclopedia.UpdateTrinket(trinket[1], {
 			Name = trinket[2],
@@ -47,36 +47,39 @@ end
 
 -- Handle displaying trinket names
 
-local t_queueLastFrame
-local t_queueNow
-mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function (_, player)
-  if #trinkets == 0 then return end
-  t_queueNow = player.QueuedItem.Item
-	if (t_queueNow ~= nil) then
-		for _, trinket in ipairs(trinkets) do
-			if (t_queueNow.ID == trinket[1] and t_queueNow:IsTrinket() and t_queueLastFrame == nil) then
-				game:GetHUD():ShowItemText(trinket[2], trinket[3])
-			end
-		end
-	end
-	t_queueLastFrame = t_queueNow
-end)
+if #trinkets ~= 0 then
+    local t_queueLastFrame
+    local t_queueNow
+    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function (_, player)
+        t_queueNow = player.QueuedItem.Item
+        if (t_queueNow ~= nil) then
+            for _, trinket in ipairs(trinkets) do
+                if (t_queueNow.ID == trinket[1] and t_queueNow:IsTrinket() and t_queueLastFrame == nil) then
+                    game:GetHUD():ShowItemText(trinket[2], trinket[3])
+                end
+            end
+        end
+        t_queueLastFrame = t_queueNow
+    end)
+end
 
 -- Handle displaying item names
-local i_queueLastFrame
-local i_queueNow
-mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function (_, player)
-  if #items == 0 then return end
-  i_queueNow = player.QueuedItem.Item
-	if (i_queueNow ~= nil) then
-		for _, item in ipairs(items) do
-			if (i_queueNow.ID == item[1] and i_queueNow:IsCollectible() and i_queueLastFrame == nil) then
-				game:GetHUD():ShowItemText(item[2], item[3])
-			end
-		end
-	end
-	i_queueLastFrame = i_queueNow
-end)
+
+if #items ~= 0 then
+    local i_queueLastFrame
+    local i_queueNow
+    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function (_, player)
+        i_queueNow = player.QueuedItem.Item
+        if (i_queueNow ~= nil) then
+            for _, item in ipairs(items) do
+                if (i_queueNow.ID == item[1] and i_queueNow:IsCollectible() and i_queueLastFrame == nil) then
+                    game:GetHUD():ShowItemText(item[2], item[3])
+                end
+            end
+        end
+        i_queueLastFrame = i_queueNow
+    end)
+end
 `
 
 import {downloadZip} from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
@@ -180,7 +183,7 @@ function appendItemsToLua() {
 			i += 1
 			if (line.includes('--$$$ITEMS-START$$$')) {
 				itemLine = i
-			} else if (line.includes('--$$$TRINKETS-STRART$$$')) {
+			} else if (line.includes('--$$$TRINKETS-START$$$')) {
 				trinketLine = i
 			}
 
