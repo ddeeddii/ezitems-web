@@ -4,12 +4,8 @@
 		<meta charset="utf-8" />
 		<title>EzItems</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
-		/>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
 		<style>
 			.center {
 				margin: auto;
@@ -31,130 +27,60 @@
 		<div class="center">
 			<script src="main.js" async defer type="module"></script>
 
-			<button
-				name="button"
-				id="submitBtn"
-				class="button is-danger center-button"
-			>
-				Download
-			</button>
-
+			<button name="button" id="submitBtn" class="button is-danger center-button"> Download </button>
 			<br />
 
 			<div>
 				<label for="folderName">Folder name</label>
-				<input
-					type="text"
-					id="folderName"
-					name="folderName"
-					class="input is-danger"
-					placeholder="my cool mod"
-				/>
-
+				<input type="text" id="folderName" name="folderName" class="input is-danger" placeholder="my cool mod" />
+				
 				<br />
 
 				<label for="modName">Internal mod name</label>
-				<input
-					type="text"
-					id="modName"
-					name="modName"
-					class="input is-danger"
-					placeholder="My Cool Mod"
-				/>
+				<input type="text" id="modName" name="modName" class="input is-danger" placeholder="My Cool Mod" />
 			</div>
-
 			<br />
 
 			<div>
 				<label for="itemName">New name</label>
-				<input
-					type="text"
-					id="itemName"
-					name="itemName"
-					class="input is-normal is-primary"
-					placeholder="My cool item"
-				/>
-
+				<input type="text" id="itemName" name="itemName" class="input is-normal is-primary" placeholder="My cool item" />
 				<br />
 
 				<label for="itemDesc">New description</label>
-				<input
-					type="text"
-					id="itemDesc"
-					name="itemDesc"
-					class="input is-info"
-					placeholder="My cool description"
-				/>
+				<input type="text" id="itemDesc" name="itemDesc" class="input is-info" placeholder="My cool description" />
 
-				<div
-					class="file has-name"
-					id="imageUpload"
-					style="margin-top: 5px"
-				>
+				<div class="file has-name" id="imageUpload" style="margin-top: 5px">
 					<label class="file-label">
-						<input
-							type="file"
-							id="itemImg"
-							name="img"
-							accept="image/x-png"
-							class="file-input"
-						/>
+						<input type="file" id="itemImg" name="img" accept="image/x-png" class="file-input" />
 						<span class="file-cta">
 							<span class="file-label"> Select a sprite </span>
 						</span>
 						<span class="file-name"> No sprite selected </span>
 					</label>
 
-					<div
-						style="
-							display: flex;
-							padding: 0px;
-							justify-content: flex-end;
-						"
-						class="center"
-					>
+					<div style="display: flex; padding: 0px; justify-content: flex-end;" class="center">
 						<span>
-							<select
-								name="itemType"
-								id="itemType"
-								class="select is-primary"
-								style="margin-right: 11px"
-							>
+							<select name="itemType" id="itemType" class="select is-primary" style="margin-right: 11px">
 								<option value="1">Item</option>
 								<option value="2">Trinket</option>
 							</select>
 						</span>
 
 						<span>
-							<select
-								style="width: 200px"
-								name="itemId"
-								id="itemId"
-								class="select is-primary"
-							></select>
+							<select style="width: 200px" name="itemId" id="itemId" class="select is-primary"></select>
 						</span>
 					</div>
 				</div>
 
 				<span>
-					<button
-						name="button"
-						id="newItemBtn"
-						class="button is-primary center-button"
-						style="margin-top: 5px"
-					>
-						Add Item
-					</button>
+					<button name="button" id="newItemBtn" class="button is-primary center-button" style="margin-top: 5px"> Add Item </button>
 				</span>
+
 			</div>
+
 		</div>
 
-		<div class="center" style="width: auto"></div>
-
-		<div
-			class="center"
-			style="display: flex; justify-content: center; width: 90%"
-		>
+		<div class="center" style="display: flex; justify-content: center; width: 90%">
 			<table id="itemTable" class="table is-bordered is-striped">
 				<tr>
 					<th>Type</th>
@@ -166,5 +92,6 @@
 				</tr>
 			</table>
 		</div>
+
 	</body>
 </html>
