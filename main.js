@@ -130,16 +130,7 @@ function clearFileInput(input) {
 }
 
 function fillItemSelector(type) {
-	let nameType
-	if (type == ItemType.Item) {
-		nameType = item_names
-		type = 1
-	} else if (type == ItemType.Trinket) {
-		nameType = trinket_names
-		type = 2
-	}
-
-	for (const [id, name] of Object.entries(nameType)) {
+	for (const [id, name] of Object.entries(names[type])) {
 		if (removedOptions[type].includes(id)) {
 			continue
 		} // check if the item was added before
@@ -405,6 +396,13 @@ function addToItemTable(idx) {
 	btn.addEventListener('click', (evt) => {
 		files[idx] = 'ignoreme'
 		row.remove()
+
+		// make the item available again
+		removedOptions[type][id - 1 ] = ''
+
+		// reset dropdown to account for item being available again
+		$('#itemId option').remove()
+		fillItemSelector(currentType)
 	})
 
 	spriteCell.addEventListener('click', (evt) => {
