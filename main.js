@@ -170,7 +170,6 @@ function appendItemsToLua() {
 		const desc = itemObj['desc']
 
 		if (name == '' || desc == '') {
-			alert('item has no item / desc, skipping when compiling lua')
 			continue
 		}
 
@@ -232,7 +231,7 @@ function validateFileName(filename) {
 		/^[^\s^\x00-\x1f\\?*:"";<>|\/.][^\x00-\x1f\\?*:"";<>|\/]*[^\s^\x00-\x1f\\?*:"";<>|\/.]+$/
 
 	if (!re.test(filename)) {
-		alert('Error: Invalid folder name!')
+		alert('Invalid folder name!')
 		return false
 	}
 
@@ -319,7 +318,6 @@ function addFile() {
 		}
 
 		itemObj['sprite'] = file
-		//files.push(file)
 	}
 
 	const itemName = $('#itemName').val()
@@ -328,7 +326,7 @@ function addFile() {
 	itemObj['desc'] = itemDesc
 
 	if (img == undefined && itemName == '' && itemDesc == '') {
-		alert('Item is empty!')
+		alert('Item has no image, name and description!')
 		return
 	}
 
@@ -341,7 +339,6 @@ function addFile() {
 
 	clearFileInput(itemImg)
 
-	console.log('adding to items', itemObj)
 	let idx = files.push(itemObj) - 1
 	addToItemTable(idx)
 }
@@ -437,7 +434,6 @@ function addToItemTable(idx) {
 }
 
 async function downloadFinishedZip() {
-	console.log('files', files)
 	let compiledFiles = compileSprites()
 
 	appendItemsToLua()
@@ -448,7 +444,6 @@ async function downloadFinishedZip() {
 	}
 	compiledFiles.push(lua)
 
-	console.log('final compfiles:', compiledFiles)
 	const blob = await downloadZip(compiledFiles).blob()
 
 	// make and click a temporary link to download the Blob
