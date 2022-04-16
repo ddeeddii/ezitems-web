@@ -7,7 +7,7 @@ Upgrade/Alternative to `isaac-ez-name-changer`.
 
 ## Installation
 ### Option 1
-Run the GitHub pages in your preferred browser
+Run the [GitHub pages](https://ddeeddii.github.io/ezitems-web/) in your preferred browser
 
 ### Option 2
 Clone the repo and start a local server
