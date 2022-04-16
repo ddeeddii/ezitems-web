@@ -19,6 +19,8 @@ You can change only the sprite of an item, without changing the name and descrip
 
 You can change the item name, description or sprite by clicking on their corresponding entries in the table located at the bottom. You can also delete an item by pressing the 'X' on the right side of the table.
 
+The theme can be changed by changing the theme of your OS.
+
 ## Credits
 **Kittenchilly** - `ezitems-web` combines [Yet Another Voodoo Pin over Dull Razor
 ](https://steamcommunity.com/sharedfiles/filedetails/?id=2586699693) and [Electric Penny over Charged Penny
