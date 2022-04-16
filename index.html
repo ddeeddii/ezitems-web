@@ -5,6 +5,8 @@
 		<title>EzItems</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+		<link rel="stylesheet" type="text/css" href="https://unpkg.com/bulma-prefers-dark" />
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 		<style>
 			.center {
@@ -20,6 +22,13 @@
 
 			body {
 				zoom: 1.5;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				select {
+					color: #b5b5b5;
+					background-color: black;
+				}
 			}
 		</style>
 	</head>
