@@ -16,3 +16,9 @@ Clone the repo and start a local server
 ](https://steamcommunity.com/sharedfiles/filedetails/?id=2606524433)'s code into one concise template which is used in all generated mods that change names/descriptions.
 
 **JSG** - Da Rules - `ezitems-web` parses some of `drdictionaries.lua`'s tables into JSON and uses them.
+
+
+`ezitems-web` uses the following libraries:
+- [JQuery](https://jquery.com/)
+- [Bulma](https://github.com/jgthms/bulma)
+- [bulma-prefers-dark](https://github.com/jloh/bulma-prefers-dark)
