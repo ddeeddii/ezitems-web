@@ -132,7 +132,7 @@ function clearFileInput(input) {
 function fillItemSelector(type) {
 	for (const [id, name] of Object.entries(names[type])) {
 		if (removedOptions[type].includes(id)) {
-			continue
+ 			continue
 		} // check if the item was added before
 
 		$('#itemId').append(
@@ -397,8 +397,13 @@ function addToItemTable(idx) {
 		files[idx] = 'ignoreme'
 		row.remove()
 
+		// WARNING
+		// There is a possiblility that removedIdx is -1
+		// In that case bad thing will happen
+
 		// make the item available again
-		removedOptions[type][id - 1 ] = ''
+		const removedIdx = removedOptions[type].indexOf(id, 0)
+		removedOptions[type][removedIdx] = ''
 
 		// reset dropdown to account for item being available again
 		$('#itemId option').remove()
