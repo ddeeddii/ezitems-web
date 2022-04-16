@@ -1,14 +1,23 @@
+![The thing itself](https://i.ibb.co/59hczF7/chrome-k-T0-G7-Uv-Vl-B.png)
+
 # ezitems-web
 Web app to create simple item rename/resprite mods for Repentance.
 
 Upgrade/Alternative to `isaac-ez-name-changer`.
 
-## Usage
+## Installation
 ### Option 1
 Run the GitHub pages in your preferred browser
 
 ### Option 2
 Clone the repo and start a local server
+
+## Usage
+When pressing the red *download* button, the website generates a zip file that contains the mod folder. Unzip the contents **of the zip file, not the folder** into the Isaac mod folder, which is located where Isaac is installed.
+
+You can change only the sprite of an item, without changing the name and description by not providing them. Vice-versa you can only change the name and description, by not providing a sprite.
+
+You can change the item name, description or sprite by clicking on their corresponding entries in the table located at the bottom. You can also delete an item by pressing the 'X' on the right side of the table.
 
 ## Credits
 **Kittenchilly** - `ezitems-web` combines [Yet Another Voodoo Pin over Dull Razor
@@ -22,3 +31,5 @@ Clone the repo and start a local server
 - [JQuery](https://jquery.com/)
 - [Bulma](https://github.com/jgthms/bulma)
 - [bulma-prefers-dark](https://github.com/jloh/bulma-prefers-dark)
+
+## [App Showcase](https://streamable.com/4rmttw)
