@@ -346,7 +346,6 @@ function addFile() {
 	addToItemTable(idx)
 }
 
-// this code doenst look good; however i havent found a way to make it better
 function addToItemTable(idx) {
 	const table = $('#itemTable')[0]
 	const itemObj = files[idx]

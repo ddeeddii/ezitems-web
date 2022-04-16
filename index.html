@@ -33,13 +33,14 @@
 			<div>
 				<label for="folderName">Folder name</label>
 				<input type="text" id="folderName" name="folderName" class="input is-danger" placeholder="my cool mod" />
-				
+
 				<br />
 
 				<label for="modName">Internal mod name</label>
 				<input type="text" id="modName" name="modName" class="input is-danger" placeholder="My Cool Mod" />
 			</div>
-			<br />
+
+			<br>
 
 			<div>
 				<label for="itemName">New name</label>
@@ -48,40 +49,40 @@
 
 				<label for="itemDesc">New description</label>
 				<input type="text" id="itemDesc" name="itemDesc" class="input is-info" placeholder="My cool description" />
-
-				<div class="file has-name" id="imageUpload" style="margin-top: 5px">
-					<label class="file-label">
-						<input type="file" id="itemImg" name="img" accept="image/x-png" class="file-input" />
-						<span class="file-cta">
-							<span class="file-label"> Select a sprite </span>
-						</span>
-						<span class="file-name"> No sprite selected </span>
-					</label>
-
-					<div style="display: flex; padding: 0px; justify-content: flex-end;" class="center">
-						<span>
-							<select name="itemType" id="itemType" class="select is-primary" style="margin-right: 11px">
-								<option value="1">Item</option>
-								<option value="2">Trinket</option>
-							</select>
-						</span>
-
-						<span>
-							<select style="width: 200px" name="itemId" id="itemId" class="select is-primary"></select>
-						</span>
-					</div>
-				</div>
-
-				<span>
-					<button name="button" id="newItemBtn" class="button is-primary center-button" style="margin-top: 5px"> Add Item </button>
-				</span>
-
 			</div>
+
+			<div class="file has-name" id="imageUpload" style="margin-top: 5px">
+				<label class="file-label">
+					<input type="file" id="itemImg" name="img" accept="image/x-png" class="file-input" />
+					<span class="file-cta">
+						<span class="file-label"> Select a sprite </span>
+					</span>
+					<span class="file-name"> No sprite selected </span>
+				</label>
+
+				<div style="display: flex; padding: 0px; justify-content: flex-end;" class="center">
+					<span>
+						<select name="itemType" id="itemType" class="select is-primary" style="margin-right: 11px">
+							<option value="1">Item</option>
+							<option value="2">Trinket</option>
+						</select>
+					</span>
+
+					<span>
+						<select style="width: 200px" name="itemId" id="itemId" class="select is-primary"></select>
+					</span>
+				</div>
+			</div>
+
+			<span>
+				<button name="button" id="newItemBtn" class="button is-primary center-button" style="margin-top: 5px"> Add Item </button>
+			</span>
+
 
 		</div>
 
-		<div class="center" style="display: flex; justify-content: center; width: 90%">
-			<table id="itemTable" class="table is-bordered is-striped">
+		<div class="" style="overflow-y: auto;">
+			<table id="itemTable" class="table is-bordered is-striped" style="margin: auto;">
 				<tr>
 					<th>Type</th>
 					<th>Vanilla Name</th>
