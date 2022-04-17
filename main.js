@@ -1,4 +1,4 @@
-const template = `-- Generated with ezitems-web
+const template = `-- Generated with ddeeddii.github.io/ezitems-web/
 local mod = RegisterMod(%NAME%, 1)
 
 -- {itemId, 'name', 'desc'}
@@ -97,6 +97,7 @@ const ItemType = {
 let files = []
 
 let currentLua = ''
+let currentLuaCreated = false
 let currentType = ItemType.Item
 let currentFolderName = ''
 
@@ -147,6 +148,7 @@ function fillItemSelector(type) {
 function createLua(name) {
 	currentLua = template.replace('%NAME%', `"${name}"`)
 	$('#modName').prop('readonly', true)
+	currentLuaCreated = true
 }
 
 function appendItemsToLua() {
@@ -288,7 +290,7 @@ function addFile() {
 		$('#folderName').prop('readonly', true)
 	} // set folder name for current mod
 
-	if ((currentLua = '')) {
+	if (!currentLuaCreated || currentLua == '') {
 		createLua(modName)
 	} // create main.lua if there isnt one
 
@@ -465,6 +467,7 @@ async function downloadFinishedZip() {
 	// clear all data
 	files = []
 	currentLua = template
+	currentLuaCreated = false
 	removedOptions = {
 		1: [],
 		2: [],
