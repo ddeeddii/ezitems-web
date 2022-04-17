@@ -84,13 +84,10 @@ end
 
 import {downloadZip} from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
 
-
-// remove `/ezitems-web` during development
-// temporary solution
-import item_gfxs from '/ezitems-web/data/item_gfxs.json' assert {type: 'json'}
-import item_names from '/ezitems-web/data/item_idtoname.json' assert {type: 'json'}
-import trinket_gfxs from '/ezitems-web/data/trinket_gfxs.json' assert {type: 'json'}
-import trinket_names from '/ezitems-web/data/trinket_idtoname.json' assert {type: 'json'}
+import item_gfxs from './data/item_gfxs.json' assert {type: 'json'}
+import item_names from './data/item_idtoname.json' assert {type: 'json'}
+import trinket_gfxs from './data/trinket_gfxs.json' assert {type: 'json'}
+import trinket_names from './data/trinket_idtoname.json' assert {type: 'json'}
 
 const ItemType = {
 	Item: 1,
