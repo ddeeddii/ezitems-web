@@ -1,6 +1,6 @@
 [![The GitHub pages][1]][2]
 
-[1]: https://i.ibb.co/59hczF7/chrome-k-T0-G7-Uv-Vl-B.png
+[1]: https://i.ibb.co/cT1zDdh/s4-U4w6x-Ktn.png
 [2]: https://ddeeddii.github.io/ezitems-web/
 
 # ezitems-web
