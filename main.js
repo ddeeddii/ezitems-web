@@ -162,7 +162,7 @@ function appendItemsToLua() {
 		const name = itemObj['name']
 		const desc = itemObj['desc']
 
-		if (name == '' || desc == '') {
+		if (name == '' && desc == '') {
 			continue
 		}
 
