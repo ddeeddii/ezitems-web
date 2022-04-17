@@ -359,13 +359,19 @@ function addToItemTable(idx) {
 	let oldNameCell = row.insertCell(0)
 	let typeCell = row.insertCell(0)
 
-	let btn = document.createElement('button')
-	btn.innerHTML = 'Delete'
+	// Style	
+	let span = document.createElement('span')
+	span.classList.add('icon', 'is-small')
 
-	// Style
-	btn.classList.add('delete')
-	btn.style.margin = 'auto'
-	btn.style.display = 'block'
+	let icon = document.createElement('i')
+	icon.classList.add('fab', 'fa-solid', 'fa-trash')
+	icon.setAttribute('aria-hidden', 'true')
+
+	let btn = document.createElement('button')
+	btn.classList.add('button', 'is-small', 'delete-button')
+
+	span.appendChild(icon)
+	btn.appendChild(span)
 
 	actionsCell.appendChild(btn)
 
@@ -470,6 +476,8 @@ async function downloadFinishedZip() {
 	$('#modName').val('') // clears mod name
 
 	$('#itemId option').remove() // clears the dropdown
+
+	console.log(currentType);
 	fillItemSelector(currentType)
 
 	// clear the readonly attributes
