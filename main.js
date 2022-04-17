@@ -132,7 +132,7 @@ function clearFileInput(input) {
 function fillItemSelector(type) {
 	for (const [id, name] of Object.entries(names[type])) {
 		if (removedOptions[type].includes(id)) {
- 			continue
+			continue
 		} // check if the item was added before
 
 		$('#itemId').append(
@@ -478,4 +478,60 @@ async function downloadFinishedZip() {
 
 	// clear table
 	$('#itemTable td').remove()
+}
+
+// Handle changing to inline when using incompatible widths
+let state = 1
+
+// Handle starting with low width
+$(document).ready(function () {
+	const width = $(window).width()
+	if (width < 1200) {
+		state = 2
+		setSelectStyles()
+	}
+})
+
+// Handle changing to low width
+$(window).resize(function () {
+	const width = $(window).width()
+	if (width < 1200 && state == 1) {
+		state = 2
+		setSelectStyles()
+	} else if (width > 1200 && state == 2) {
+		state = 1
+		resetSelectStyles()
+	}
+})
+
+function setSelectStyles() {
+	$('#imageUpload').css({'display': 'inline'})
+
+	$('#typeItemSelectors').css({
+		'display': 'inline',
+		'justify-content': '',
+		'min-width': 'fit-content',
+		'margin-top': '5px',
+	})
+
+	$('#imageUploadSpan').css({
+		'margin-top': '5px',
+		'margin-bottom': '5px'
+	})
+}
+
+function resetSelectStyles() {
+	$('#imageUpload').css({'display': ''})
+
+	$('#typeItemSelectors').css({
+		'display': 'flex',
+		'justify-content': 'flex-end',
+		'min-width': '',
+		'margin-top': '',
+	})
+
+	$('#imageUploadSpan').css({
+		'margin-top': '',
+		'margin-bottom': ''
+	})
 }
