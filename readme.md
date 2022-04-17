@@ -24,6 +24,10 @@ You can change the item name, description or sprite by clicking on their corresp
 
 The theme can be changed by changing the theme of your OS.
 
+When uploading sprites, the sprites **must be** 32x32 and have a 32 bit depth.
+
+For any problems with the app, feel free to submit an issue or DM me on discord 
+
 ## Credits
 **Kittenchilly** - `ezitems-web` combines [Yet Another Voodoo Pin over Dull Razor
 ](https://steamcommunity.com/sharedfiles/filedetails/?id=2586699693) and [Electric Penny over Charged Penny
@@ -31,10 +35,10 @@ The theme can be changed by changing the theme of your OS.
 
 **JSG** - Da Rules - `ezitems-web` parses some of `drdictionaries.lua`'s tables into JSON and uses them.
 
-
-`ezitems-web` uses the following libraries:
+**Libraries** - `ezitems-web` uses the following libraries:
 - [JQuery](https://jquery.com/)
 - [Bulma](https://github.com/jgthms/bulma)
 - [bulma-prefers-dark](https://github.com/jloh/bulma-prefers-dark)
+- [Font Awesome](https://fontawesome.com/)
 
 ## [App Showcase](https://streamable.com/4rmttw)
