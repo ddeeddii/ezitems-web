@@ -405,6 +405,8 @@ function addToItemTable(idx) {
 		img.src = URL.createObjectURL(itemObj['sprite']['input'])
 		img.width = '32'
 		img.height = '32'
+		img.style.verticalAlign = 'inherit'
+		
 		spriteCell.appendChild(img)
 	}
 
@@ -466,6 +468,8 @@ function addToItemTable(idx) {
 			img.src = URL.createObjectURL(itemObj['sprite']['input'])
 			img.width = '32'
 			img.height = '32'
+
+			img.style.verticalAlign = 'inherit'
 			spriteCell.replaceChildren(img)
 		}
 	})
