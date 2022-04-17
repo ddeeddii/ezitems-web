@@ -20,7 +20,7 @@ When pressing the red *download* button, the website generates a zip file that c
 
 You can change only the sprite of an item, without changing the name and description by not providing them. Vice-versa you can only change the name and description, by not providing a sprite.
 
-You can change the item name, description or sprite by clicking on their corresponding entries in the table located at the bottom. You can also delete an item by pressing the 'X' on the right side of the table.
+You can change the item name, description or sprite by clicking on their corresponding entries in the table located at the bottom. You can also delete an item by pressing the trash button on the right side of the table.
 
 The theme can be changed by changing the theme of your OS.
 
