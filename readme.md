@@ -1,4 +1,7 @@
-![The thing itself](https://i.ibb.co/59hczF7/chrome-k-T0-G7-Uv-Vl-B.png)
+[![The GitHub pages][1]][2]
+
+[1]: https://i.ibb.co/59hczF7/chrome-k-T0-G7-Uv-Vl-B.png
+[2]: https://ddeeddii.github.io/ezitems-web/
 
 # ezitems-web
 Web app to create simple item rename/resprite mods for Repentance.
