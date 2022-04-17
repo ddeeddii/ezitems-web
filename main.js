@@ -231,6 +231,18 @@ function validateFileName(filename) {
 	return true
 }
 
+function realFilesLength(){
+	let length = 0
+	for (const itemObj of files) {
+		if (itemObj == 'ignoreme') {
+			continue
+		}
+		length += 1
+	}
+
+	return length
+}
+
 // ================================== Helper functions end
 
 $(document).ready(function () {
@@ -416,6 +428,10 @@ function addToItemTable(idx) {
 		// reset dropdown to account for item being available again
 		$('#itemId option').remove()
 		fillItemSelector(currentType)
+
+		if(realFilesLength() == 0){
+			window.onbeforeunload = null
+		}
 	})
 
 	spriteCell.addEventListener('click', (evt) => {
@@ -442,6 +458,12 @@ function addToItemTable(idx) {
 			spriteCell.replaceChildren(img)
 		}
 	})
+
+	if( typeof(window.onbeforeunload) != 'function' ){
+		window.onbeforeunload = function() {
+			return true
+		}
+	}
 }
 
 async function downloadFinishedZip() {
@@ -480,7 +502,6 @@ async function downloadFinishedZip() {
 
 	$('#itemId option').remove() // clears the dropdown
 
-	console.log(currentType);
 	fillItemSelector(currentType)
 
 	// clear the readonly attributes
@@ -489,6 +510,9 @@ async function downloadFinishedZip() {
 
 	// clear table
 	$('#itemTable td').remove()
+
+	// remove the exit confirmation
+	window.onbeforeunload = null;
 }
 
 // Handle changing to inline when using incompatible widths
