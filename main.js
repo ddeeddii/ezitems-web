@@ -146,6 +146,9 @@ function fillItemSelector(type) {
 }
 
 function createLua(name) {
+	// sanitize the name
+	name = name.replace(/['"]+/g, '').replace(/\\/g, '')
+
 	currentLua = template.replace('%NAME%', `"${name}"`)
 	$('#modName').prop('readonly', true)
 	currentLuaCreated = true
@@ -159,8 +162,11 @@ function appendItemsToLua() {
 
 		const type = itemObj['type']
 		const id = itemObj['id']
-		const name = itemObj['name']
-		const desc = itemObj['desc']
+
+		// after renaming in the table, they arent sanitizied
+		// so they are sanitized here again
+		const name = itemObj['name'].replace(/['"]+/g, '').replace(/\\/g, '')
+		const desc = itemObj['desc'].replace(/['"]+/g, '').replace(/\\/g, '')
 
 		if (name == '' && desc == '') {
 			continue
@@ -325,8 +331,13 @@ function addFile() {
 		itemObj['sprite'] = file
 	}
 
-	const itemName = $('#itemName').val()
-	const itemDesc = $('#itemDesc').val()
+	let itemName = $('#itemName').val()
+	let itemDesc = $('#itemDesc').val()
+
+	// 'sanitize' the item name and description
+	itemName = itemName.replace(/['"]+/g, '').replace(/\\/g, '')
+	itemDesc = itemDesc.replace(/['"]+/g, '').replace(/\\/g, '')
+
 	itemObj['name'] = itemName
 	itemObj['desc'] = itemDesc
 
