@@ -22,7 +22,7 @@ if EID then
 
   -- Adds items defined in items
   for _, item in ipairs(items) do
-		local EIDdescription = EID:getDescriptionObj(5, 350, item[1]).Description
+		local EIDdescription = EID:getDescriptionObj(5, 100, item[1]).Description
 		EID:addCollectible(item[1], EIDdescription, item[2], "en_us")
 	end
 end
