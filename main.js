@@ -134,7 +134,7 @@ function fillItemSelector(type) {
 	for (const [id, name] of Object.entries(names[type])) {
 		if (removedOptions[type].includes(id)) {
 			continue
-		} // check if the item was added before
+		} // Check if the item was added before
 
 		$('#itemId').append(
 			$('<option>', {
@@ -146,7 +146,7 @@ function fillItemSelector(type) {
 }
 
 function createLua(name) {
-	// sanitize the name
+	// Sanitize the name
 	name = name.replace(/['"]+/g, '').replace(/\\/g, '')
 
 	currentLua = template.replace('%NAME%', `"${name}"`)
@@ -163,8 +163,8 @@ function appendItemsToLua() {
 		const type = itemObj['type']
 		const id = itemObj['id']
 
-		// after renaming in the table, they arent sanitizied
-		// so they are sanitized here again
+		// After renaming in the table, they arent sanitizied
+		// So they are sanitized here again
 		const name = itemObj['name'].replace(/['"]+/g, '').replace(/\\/g, '')
 		const desc = itemObj['desc'].replace(/['"]+/g, '').replace(/\\/g, '')
 
@@ -206,7 +206,7 @@ function compileSprites() {
 	let sprites = []
 
 	for (const itemObj of files) {
-		if (itemObj == 'ignoreme') {
+		if (itemObj == 'ignoreme' || itemObj['sprite'] == 'ignoreme') {
 			continue
 		}
 
@@ -274,7 +274,7 @@ $(document).ready(function () {
 	fillItemSelector(ItemType.Item)
 
 	$('#itemType').change(function () {
-		$('#itemId option').remove() // clears the dropdown
+		$('#itemId option').remove() // Clear the dropdown
 		clearAllInputs()
 
 		const option = $('option:selected', this).val()
@@ -306,11 +306,11 @@ function addFile() {
 	if (currentFolderName == '') {
 		currentFolderName = folderName
 		$('#folderName').prop('readonly', true)
-	} // set folder name for current mod
+	} // Set folder name for current mod
 
 	if (!currentLuaCreated || currentLua == '') {
 		createLua(modName)
-	} // create main.lua if there isnt one
+	} // Create main.lua if there isnt one
 
 	let itemObj = []
 
@@ -334,7 +334,8 @@ function addFile() {
 	let itemName = $('#itemName').val()
 	let itemDesc = $('#itemDesc').val()
 
-	// 'sanitize' the item name and description
+	// 'sanitize' The item name and description
+	// The regex removes " and \
 	itemName = itemName.replace(/['"]+/g, '').replace(/\\/g, '')
 	itemDesc = itemDesc.replace(/['"]+/g, '').replace(/\\/g, '')
 
@@ -384,7 +385,7 @@ function addToItemTable(idx) {
 	let oldNameCell = row.insertCell(0)
 	let typeCell = row.insertCell(0)
 
-	// Style	
+	// ========= Actions Cell
 	let span = document.createElement('span')
 	span.classList.add('icon', 'is-small')
 
@@ -400,32 +401,71 @@ function addToItemTable(idx) {
 
 	actionsCell.appendChild(btn)
 
+	// ========= Sprite Cell
+	spriteCell.setAttribute('align', 'center')
+
+	// Image
+	let img = new Image()
+	img.width = '32'
+	img.height = '32'
+	img.style.verticalAlign = 'inherit'
+	
 	if (itemObj['sprite'] != undefined) {
-		let img = new Image()
 		img.src = URL.createObjectURL(itemObj['sprite']['input'])
-		img.width = '32'
-		img.height = '32'
-		img.style.verticalAlign = 'inherit'
-		
-		spriteCell.appendChild(img)
 	}
 
+	spriteCell.appendChild(img)
+
+	// Empty Image
+	let emptyImg = new Image()
+	emptyImg.width = '32'
+	emptyImg.height = '32'
+	emptyImg.style.verticalAlign = 'inherit'
+
+	emptyImg.style.display = 'none'
+
+	spriteCell.appendChild(emptyImg)
+
+	// Button
+	let spriteSpan = document.createElement('span')
+	spriteSpan.classList.add('icon', 'is-small')
+
+	let spriteIcon = document.createElement('i')
+	spriteIcon.classList.add('fab', 'fa-solid', 'fa-trash')
+	spriteIcon.setAttribute('aria-hidden', 'true')
+
+	let spriteBtn = document.createElement('button')
+	spriteBtn.classList.add('button', 'is-small')
+
+	spriteBtn.style.marginLeft = '5px'
+
+	spriteSpan.appendChild(spriteIcon)
+	spriteBtn.appendChild(spriteSpan)
+
+	spriteCell.appendChild(spriteBtn)
+
+	// ========= Description Cell
 	descCell.innerHTML = desc
-	nameCell.innerHTML = name
-	oldNameCell.innerHTML = names[type][id]
-	typeCell.innerHTML = typeStr
-
 	descCell.setAttribute('contenteditable', 'true')
-	nameCell.setAttribute('contenteditable', 'true')
-
 	descCell.addEventListener('input', (evt) => {
 		files[idx]['desc'] = descCell.innerHTML
 	})
 
+	// ========= Name Cell
+	nameCell.innerHTML = name
+	nameCell.setAttribute('contenteditable', 'true')
 	nameCell.addEventListener('input', (evt) => {
 		files[idx]['name'] = nameCell.innerHTML
 	})
 
+	// ========= Vanilla Name Cell
+	oldNameCell.innerHTML = names[type][id]
+	
+	// ========= Type Cell
+	typeCell.innerHTML = typeStr
+
+	// ========= Event Listeners
+	// Remove button
 	btn.addEventListener('click', (evt) => {
 		files[idx] = 'ignoreme'
 		row.remove()
@@ -434,11 +474,11 @@ function addToItemTable(idx) {
 		// There is a possiblility that removedIdx is -1
 		// In that case bad thing will happen
 
-		// make the item available again
+		// Make the item available again
 		const removedIdx = removedOptions[type].indexOf(id, 0)
 		removedOptions[type][removedIdx] = ''
 
-		// reset dropdown to account for item being available again
+		// Reset dropdown to account for item being available again
 		$('#itemId option').remove()
 		fillItemSelector(currentType)
 
@@ -447,13 +487,20 @@ function addToItemTable(idx) {
 		}
 	})
 
-	spriteCell.addEventListener('click', (evt) => {
+	// Sprite Image
+	function changeSprite() {
 		let newSpriteInput = document.createElement('input')
 		newSpriteInput.type = 'file'
 		newSpriteInput.accept = 'image/x-png'
 		newSpriteInput.click()
 
 		newSpriteInput.onchange = () => {
+			// Change the empty image for the actual image
+			if(img.style.display == 'none'){ 
+				img.style.display = ''
+				emptyImg.style.display = 'none'
+			}
+
 			const imgNew = newSpriteInput.files[0]
 
 			const file = {
@@ -464,16 +511,22 @@ function addToItemTable(idx) {
 
 			itemObj['sprite'] = file
 
-			let img = new Image()
 			img.src = URL.createObjectURL(itemObj['sprite']['input'])
-			img.width = '32'
-			img.height = '32'
-
-			img.style.verticalAlign = 'inherit'
-			spriteCell.replaceChildren(img)
 		}
+	}
+
+	img.addEventListener('click', changeSprite)
+	emptyImg.addEventListener('click', changeSprite)
+
+	// Sprite Button
+	spriteBtn.addEventListener('click', (evt) => {
+		img.style.display = 'none'
+		emptyImg.style.display = ''
+
+		itemObj['sprite'] = 'ignoreme'
 	})
 
+	// Exit confirmation
 	if( typeof(window.onbeforeunload) != 'function' ){
 		window.onbeforeunload = function() {
 			return true
@@ -494,14 +547,14 @@ async function downloadFinishedZip() {
 
 	const blob = await downloadZip(compiledFiles).blob()
 
-	// make and click a temporary link to download the Blob
+	// Make and click a temporary link to download the Blob
 	const link = document.createElement('a')
 	link.href = URL.createObjectURL(blob)
 	link.download = 'mod.zip'
 	link.click()
 	link.remove()
 
-	// clear all data
+	// Clear all data
 	files = []
 	currentLua = template
 	currentLuaCreated = false
@@ -510,23 +563,23 @@ async function downloadFinishedZip() {
 		2: [],
 	}
 
-	$('#folderName').val('') // clears the folder name
+	$('#folderName').val('') // Clear the folder name
 	currentFolderName = ''
 
-	$('#modName').val('') // clears mod name
+	$('#modName').val('') // Clear mod name
 
-	$('#itemId option').remove() // clears the dropdown
+	$('#itemId option').remove() // Clear the dropdown
 
 	fillItemSelector(currentType)
 
-	// clear the readonly attributes
+	// Clear the readonly attributes
 	$('#modName').removeAttr('readonly')
 	$('#folderName').removeAttr('readonly')
 
-	// clear table
+	// Clear table
 	$('#itemTable td').remove()
 
-	// remove the exit confirmation
+	// Remove the exit confirmation
 	window.onbeforeunload = null;
 }
 
@@ -542,7 +595,7 @@ $(document).ready(function () {
 	}
 })
 
-// Handle changing to low width
+// Handle changing to low width (responsiveness)
 $(window).resize(function () {
 	const width = $(window).width()
 	if (width < 1200 && state == 1) {
