@@ -1,6 +1,6 @@
 [![The GitHub pages][1]][2]
 
-[1]: https://i.ibb.co/cT1zDdh/s4-U4w6x-Ktn.png
+[1]: https://i.ibb.co/x524Y8S/chrome-a-IMK50kn-NJ.png
 [2]: https://ddeeddii.github.io/ezitems-web/
 
 # ezitems-web
@@ -22,9 +22,13 @@ You can change only the sprite of an item, without changing the name and descrip
 
 You can change the item name, description or sprite by clicking on their corresponding entries in the table located at the bottom. You can also delete an item by pressing the trash button on the right side of the table.
 
+You can also delete an item sprite by pressing the trash button next to the sprite. To add it back, simply press the highlighted box to the left of it.
+
+Once one item has been added, the folder name and mod name are not changeable.
+
 The theme can be changed by changing the theme of your browser or your OS.
 
-When uploading sprites, the sprites **must be** 32x32 and have a 32 bit depth.
+When uploading sprites, the sprites **must be** 32x32 and have a 32 bit depth in order to work properly in game.
 
 For any problems with the app, feel free to submit an issue or DM me on discord 
 
