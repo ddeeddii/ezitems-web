@@ -426,7 +426,7 @@ function addToItemTable(idx) {
 
 	spriteCell.appendChild(emptyImg)
 
-	// Button
+	// Sprite Delete Button
 	let spriteSpan = document.createElement('span')
 	spriteSpan.classList.add('icon', 'is-small')
 
@@ -434,15 +434,19 @@ function addToItemTable(idx) {
 	spriteIcon.classList.add('fab', 'fa-solid', 'fa-trash')
 	spriteIcon.setAttribute('aria-hidden', 'true')
 
-	let spriteBtn = document.createElement('button')
-	spriteBtn.classList.add('button', 'is-small')
+	let spriteDeleteBtn = document.createElement('button')
+	spriteDeleteBtn.classList.add('button', 'is-small')
 
-	spriteBtn.style.marginLeft = '5px'
+	spriteDeleteBtn.style.marginLeft = '5px'
+
+	if(itemObj['sprite'] == undefined){
+		spriteDeleteBtn.style.display = 'none'
+	}
 
 	spriteSpan.appendChild(spriteIcon)
-	spriteBtn.appendChild(spriteSpan)
+	spriteDeleteBtn.appendChild(spriteSpan)
 
-	spriteCell.appendChild(spriteBtn)
+	spriteCell.appendChild(spriteDeleteBtn)
 
 	// ========= Description Cell
 	descCell.innerHTML = desc
@@ -496,9 +500,10 @@ function addToItemTable(idx) {
 
 		newSpriteInput.onchange = () => {
 			// Change the empty image for the actual image
-			if(img.style.display == 'none'){ 
+			if(spriteDeleteBtn.style.display = 'none'){ 
 				img.style.display = ''
 				emptyImg.style.display = 'none'
+				spriteDeleteBtn.style.display = ''
 			}
 
 			const imgNew = newSpriteInput.files[0]
@@ -519,9 +524,10 @@ function addToItemTable(idx) {
 	emptyImg.addEventListener('click', changeSprite)
 
 	// Sprite Button
-	spriteBtn.addEventListener('click', (evt) => {
+	spriteDeleteBtn.addEventListener('click', (evt) => {
 		img.style.display = 'none'
 		emptyImg.style.display = ''
+		spriteDeleteBtn.style.display = 'none'
 
 		itemObj['sprite'] = 'ignoreme'
 	})
