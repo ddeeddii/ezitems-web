@@ -81,8 +81,7 @@ if #items ~= 0 then
     end)
 end
 `
-
-import {downloadZip} from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
+let zip = new JSZip()
 
 import item_gfxs from './data/item_gfxs.json' assert {type: 'json'}
 import item_names from './data/item_idtoname.json' assert {type: 'json'}
@@ -109,11 +108,6 @@ const names = {
 const gfxs = {
 	1: item_gfxs,
 	2: trinket_gfxs,
-}
-
-const path = {
-	1: 'resources/gfx/items/collectibles',
-	2: 'resources/gfx/items/trinkets',
 }
 
 let removedOptions = {
@@ -202,20 +196,50 @@ function appendItemsToLua() {
 	}
 }
 
-function compileSprites() {
-	let sprites = []
+function compileSprites() {	
+	let folders = {
+		root: {
+			obj: ''
+		},
 
-	for (const itemObj of files) {
-		if (itemObj == 'ignoreme' || itemObj['sprite'] == 'ignoreme') {
-			continue
-		}
+		item: {
+			obj: ''
+		},
 
-		if (itemObj['sprite'] != undefined) {
-			sprites.push(itemObj['sprite'])
+		trinket: {
+			obj: ''
 		}
 	}
 
-	return sprites
+	for (const itemObj of files) {
+		if (itemObj == 'ignoreme' || itemObj['sprite'] == 'ignoreme' || itemObj['sprite'] == undefined) {
+			continue
+		}
+		
+		const sprite = itemObj['sprite']
+		const type = itemObj['type']
+
+		// Create root gfx folder if not created already
+		if(folders.root.obj == ''){
+			folders.root.obj = zip.folder('resources').folder('gfx').folder('items')
+		}
+
+		// Handle adding the sprites
+		if(type == ItemType.Item){
+			if(folders.item.obj == ''){
+				folders.item.obj = folders.root.obj.folder('collectibles')
+			}
+
+			folders.item.obj.file(sprite.name, sprite.img)
+			
+		} else if(type == ItemType.Trinket){
+			if(folders.trinket.obj == ''){
+				folders.trinket.obj = folders.root.obj.folder('trinkets')
+			}
+
+			folders.trinket.obj.file(sprite.name, sprite.img)
+		}
+	}
 }
 
 function clearAllInputs() {
@@ -322,10 +346,10 @@ function addFile() {
 	const img = itemImg.files[0]
 	if (img != undefined) {
 		let gfx = gfxs[currentType]
+		
 		const file = {
-			name: `${currentFolderName}/${path[currentType]}/${gfx[item]}`,
-			lastModified: new Date(),
-			input: img,
+			name: gfx[item],
+			img: img
 		}
 
 		itemObj['sprite'] = file
@@ -411,7 +435,7 @@ function addToItemTable(idx) {
 	img.style.verticalAlign = 'inherit'
 	
 	if (itemObj['sprite'] != undefined) {
-		img.src = URL.createObjectURL(itemObj['sprite']['input'])
+		img.src = URL.createObjectURL(itemObj['sprite']['img'])
 	}
 
 	spriteCell.appendChild(img)
@@ -508,10 +532,11 @@ function addToItemTable(idx) {
 
 			const imgNew = newSpriteInput.files[0]
 
+			let gfx = gfxs[currentType]
+		
 			const file = {
-				name: `${currentFolderName}/${path[type]}/${gfxs[type][id]}`,
-				lastModified: new Date(),
-				input: imgNew,
+				name: gfx[item],
+				img: imgNew
 			}
 
 			itemObj['sprite'] = file
@@ -541,26 +566,21 @@ function addToItemTable(idx) {
 }
 
 async function downloadFinishedZip() {
-	let compiledFiles = compileSprites()
-
+	compileSprites()
 	appendItemsToLua()
-	const lua = {
-		name: `${currentFolderName}/main.lua`,
-		lastModified: new Date(),
-		input: currentLua,
-	}
-	compiledFiles.push(lua)
+	zip.file('main.lua', currentLua)
 
-	const blob = await downloadZip(compiledFiles).blob()
+	zip.generateAsync({type:'blob'}).then((content) => {
+		// Make and click a temporary link to download the Blob  
+		const link = document.createElement('a')
+		link.href = URL.createObjectURL(content)
+		link.download = 'mod.zip'
+		link.click()
+		link.remove()
+	});
 
-	// Make and click a temporary link to download the Blob
-	const link = document.createElement('a')
-	link.href = URL.createObjectURL(blob)
-	link.download = 'mod.zip'
-	link.click()
-	link.remove()
-
-	// Clear all data
+	// Clear all data 
+	zip = new JSZip()
 	files = []
 	currentLua = template
 	currentLuaCreated = false
@@ -623,6 +643,7 @@ function setSelectStyles() {
 		'margin-top': '5px',
 	})
 
+	// @ts-ignore
 	$('#imageUploadSpan').css({
 		'margin-top': '5px',
 		'margin-bottom': '5px'
