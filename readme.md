@@ -22,7 +22,7 @@ You can change only the sprite of an item, without changing the name and descrip
 
 You can change the item name, description or sprite by clicking on their corresponding entries in the table located at the bottom. You can also delete an item by pressing the trash button on the right side of the table.
 
-The theme can be changed by changing the theme of your OS.
+The theme can be changed by changing the theme of your browser or your OS.
 
 When uploading sprites, the sprites **must be** 32x32 and have a 32 bit depth.
 
