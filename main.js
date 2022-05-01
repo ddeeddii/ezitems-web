@@ -226,6 +226,7 @@ function compileSprites() {
 		// Create root gfx folder if not created already
 		if (folders.root.obj == '') {
 			folders.root.obj = zip
+				.folder(currentFolderName)
 				.folder('resources')
 				.folder('gfx')
 				.folder('items')
@@ -574,7 +575,11 @@ function addToItemTable(idx) {
 async function downloadFinishedZip() {
 	compileSprites()
 	appendItemsToLua()
-	zip.file('main.lua', currentLua)
+	zip.folder(currentFolderName).file('main.lua', currentLua)
+
+	// Why is .folder(currentFolderName) everywhere instead of
+	// creating a folder obj from `zip` and using that instead of `zip`?
+	// Simple - it doesn't work, and I dont know why
 
 	zip.generateAsync({type: 'blob'}).then((content) => {
 		// Make and click a temporary link to download the Blob
