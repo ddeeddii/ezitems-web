@@ -198,17 +198,9 @@ function appendItemsToLua() {
 
 function compileSprites() {
 	let folders = {
-		root: {
-			obj: '',
-		},
-
-		item: {
-			obj: '',
-		},
-
-		trinket: {
-			obj: '',
-		},
+		root: undefined,
+		item: undefined,
+		trinket: undefined,
 	}
 
 	for (const itemObj of files) {
@@ -224,8 +216,8 @@ function compileSprites() {
 		const type = itemObj['type']
 
 		// Create root gfx folder if not created already
-		if (folders.root.obj == '') {
-			folders.root.obj = zip
+		if (folders.root == undefined) {
+			folders.root = zip
 				.folder(currentFolderName)
 				.folder('resources')
 				.folder('gfx')
@@ -234,17 +226,17 @@ function compileSprites() {
 
 		// Handle adding the sprites
 		if (type == ItemType.Item) {
-			if (folders.item.obj == '') {
-				folders.item.obj = folders.root.obj.folder('collectibles')
+			if (folders.item == undefined) {
+				folders.item = folders.root.folder('collectibles')
 			}
 
-			folders.item.obj.file(sprite.name, sprite.img)
+			folders.item.file(sprite.name, sprite.img)
 		} else if (type == ItemType.Trinket) {
-			if (folders.trinket.obj == '') {
-				folders.trinket.obj = folders.root.obj.folder('trinkets')
+			if (folders.trinket == undefined) {
+				folders.trinket = folders.root.folder('trinkets')
 			}
 
-			folders.trinket.obj.file(sprite.name, sprite.img)
+			folders.trinket.file(sprite.name, sprite.img)
 		}
 	}
 }
@@ -542,13 +534,13 @@ function addToItemTable(idx) {
 			let gfx = gfxs[currentType]
 
 			const file = {
-				name: gfx[item],
+				name: gfx[id],
 				img: imgNew,
 			}
 
 			itemObj['sprite'] = file
 
-			img.src = URL.createObjectURL(itemObj['sprite']['input'])
+			img.src = URL.createObjectURL(itemObj['sprite']['img'])
 		}
 	}
 
