@@ -196,44 +196,50 @@ function appendItemsToLua() {
 	}
 }
 
-function compileSprites() {	
+function compileSprites() {
 	let folders = {
 		root: {
-			obj: ''
+			obj: '',
 		},
 
 		item: {
-			obj: ''
+			obj: '',
 		},
 
 		trinket: {
-			obj: ''
-		}
+			obj: '',
+		},
 	}
 
 	for (const itemObj of files) {
-		if (itemObj == 'ignoreme' || itemObj['sprite'] == 'ignoreme' || itemObj['sprite'] == undefined) {
+		if (
+			itemObj == 'ignoreme' ||
+			itemObj['sprite'] == 'ignoreme' ||
+			itemObj['sprite'] == undefined
+		) {
 			continue
 		}
-		
+
 		const sprite = itemObj['sprite']
 		const type = itemObj['type']
 
 		// Create root gfx folder if not created already
-		if(folders.root.obj == ''){
-			folders.root.obj = zip.folder('resources').folder('gfx').folder('items')
+		if (folders.root.obj == '') {
+			folders.root.obj = zip
+				.folder('resources')
+				.folder('gfx')
+				.folder('items')
 		}
 
 		// Handle adding the sprites
-		if(type == ItemType.Item){
-			if(folders.item.obj == ''){
+		if (type == ItemType.Item) {
+			if (folders.item.obj == '') {
 				folders.item.obj = folders.root.obj.folder('collectibles')
 			}
 
 			folders.item.obj.file(sprite.name, sprite.img)
-			
-		} else if(type == ItemType.Trinket){
-			if(folders.trinket.obj == ''){
+		} else if (type == ItemType.Trinket) {
+			if (folders.trinket.obj == '') {
 				folders.trinket.obj = folders.root.obj.folder('trinkets')
 			}
 
@@ -261,7 +267,7 @@ function validateFileName(filename) {
 	return true
 }
 
-function realFilesLength(){
+function realFilesLength() {
 	let length = 0
 	for (const itemObj of files) {
 		if (itemObj == 'ignoreme') {
@@ -346,10 +352,10 @@ function addFile() {
 	const img = itemImg.files[0]
 	if (img != undefined) {
 		let gfx = gfxs[currentType]
-		
+
 		const file = {
 			name: gfx[item],
-			img: img
+			img: img,
 		}
 
 		itemObj['sprite'] = file
@@ -433,7 +439,7 @@ function addToItemTable(idx) {
 	img.width = '32'
 	img.height = '32'
 	img.style.verticalAlign = 'inherit'
-	
+
 	if (itemObj['sprite'] != undefined) {
 		img.src = URL.createObjectURL(itemObj['sprite']['img'])
 	}
@@ -463,7 +469,7 @@ function addToItemTable(idx) {
 
 	spriteDeleteBtn.style.marginLeft = '5px'
 
-	if(itemObj['sprite'] == undefined){
+	if (itemObj['sprite'] == undefined) {
 		spriteDeleteBtn.style.display = 'none'
 	}
 
@@ -488,7 +494,7 @@ function addToItemTable(idx) {
 
 	// ========= Vanilla Name Cell
 	oldNameCell.innerHTML = names[type][id]
-	
+
 	// ========= Type Cell
 	typeCell.innerHTML = typeStr
 
@@ -510,7 +516,7 @@ function addToItemTable(idx) {
 		$('#itemId option').remove()
 		fillItemSelector(currentType)
 
-		if(realFilesLength() == 0){
+		if (realFilesLength() == 0) {
 			window.onbeforeunload = null
 		}
 	})
@@ -524,7 +530,7 @@ function addToItemTable(idx) {
 
 		newSpriteInput.onchange = () => {
 			// Change the empty image for the actual image
-			if(spriteDeleteBtn.style.display = 'none'){ 
+			if ((spriteDeleteBtn.style.display = 'none')) {
 				img.style.display = ''
 				emptyImg.style.display = 'none'
 				spriteDeleteBtn.style.display = ''
@@ -533,10 +539,10 @@ function addToItemTable(idx) {
 			const imgNew = newSpriteInput.files[0]
 
 			let gfx = gfxs[currentType]
-		
+
 			const file = {
 				name: gfx[item],
-				img: imgNew
+				img: imgNew,
 			}
 
 			itemObj['sprite'] = file
@@ -558,8 +564,8 @@ function addToItemTable(idx) {
 	})
 
 	// Exit confirmation
-	if( typeof(window.onbeforeunload) != 'function' ){
-		window.onbeforeunload = function() {
+	if (typeof window.onbeforeunload != 'function') {
+		window.onbeforeunload = function () {
 			return true
 		}
 	}
@@ -570,16 +576,16 @@ async function downloadFinishedZip() {
 	appendItemsToLua()
 	zip.file('main.lua', currentLua)
 
-	zip.generateAsync({type:'blob'}).then((content) => {
-		// Make and click a temporary link to download the Blob  
+	zip.generateAsync({type: 'blob'}).then((content) => {
+		// Make and click a temporary link to download the Blob
 		const link = document.createElement('a')
 		link.href = URL.createObjectURL(content)
 		link.download = 'mod.zip'
 		link.click()
 		link.remove()
-	});
+	})
 
-	// Clear all data 
+	// Clear all data
 	zip = new JSZip()
 	files = []
 	currentLua = template
@@ -606,7 +612,7 @@ async function downloadFinishedZip() {
 	$('#itemTable td').remove()
 
 	// Remove the exit confirmation
-	window.onbeforeunload = null;
+	window.onbeforeunload = null
 }
 
 // Handle changing to inline when using incompatible widths
@@ -634,10 +640,10 @@ $(window).resize(function () {
 })
 
 function setSelectStyles() {
-	$('#imageUpload').css({'display': 'inline'})
+	$('#imageUpload').css({display: 'inline'})
 
 	$('#typeItemSelectors').css({
-		'display': 'inline',
+		display: 'inline',
 		'justify-content': '',
 		'min-width': 'fit-content',
 		'margin-top': '5px',
@@ -646,15 +652,15 @@ function setSelectStyles() {
 	// @ts-ignore
 	$('#imageUploadSpan').css({
 		'margin-top': '5px',
-		'margin-bottom': '5px'
+		'margin-bottom': '5px',
 	})
 }
 
 function resetSelectStyles() {
-	$('#imageUpload').css({'display': ''})
+	$('#imageUpload').css({display: ''})
 
 	$('#typeItemSelectors').css({
-		'display': 'flex',
+		display: 'flex',
 		'justify-content': 'flex-end',
 		'min-width': '',
 		'margin-top': '',
@@ -662,6 +668,6 @@ function resetSelectStyles() {
 
 	$('#imageUploadSpan').css({
 		'margin-top': '',
-		'margin-bottom': ''
+		'margin-bottom': '',
 	})
 }
