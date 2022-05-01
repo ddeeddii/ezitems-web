@@ -173,9 +173,9 @@ function appendItemsToLua() {
 		let lines = currentLua.split('\n')
 		for (const line of lines) {
 			i += 1
-			if (line.includes('--$$$ITEMS-START$$$')) {
+			if (line == '  --$$$ITEMS-START$$$') {
 				itemLine = i
-			} else if (line.includes('--$$$TRINKETS-START$$$')) {
+			} else if (line == '  --$$$TRINKETS-START$$$') {
 				trinketLine = i
 			}
 
