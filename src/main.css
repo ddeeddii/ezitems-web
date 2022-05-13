@@ -13,6 +13,11 @@ body {
 	zoom: 1.5;
 }
 
+.delete-button {
+	width: 100%;
+	width: -webkit-fill-available;
+}
+
 @media (prefers-color-scheme: dark) {
 	select {
 		color: #b5b5b5;

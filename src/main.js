@@ -170,7 +170,7 @@ function appendItemsToLua() {
 		let trinketLine
 		let itemLine
 
-		let lines = currentLua.split('\n')
+		const lines = currentLua.split('\n')
 		for (const line of lines) {
 			i += 1
 			if (line == '  --$$$ITEMS-START$$$') {
@@ -197,7 +197,7 @@ function appendItemsToLua() {
 }
 
 function compileSprites() {
-	let folders = {
+	const folders = {
 		root: undefined,
 		item: undefined,
 		trinket: undefined,
@@ -335,7 +335,7 @@ function addFile() {
 		createLua(modName)
 	} // Create main.lua if there isnt one
 
-	let itemObj = []
+	const itemObj = []
 
 	const item = $('#itemId').val()
 	itemObj['type'] = currentType
@@ -344,7 +344,7 @@ function addFile() {
 	const itemImg = $('#itemImg')[0]
 	const img = itemImg.files[0]
 	if (img != undefined) {
-		let gfx = gfxs[currentType]
+		const gfx = gfxs[currentType]
 
 		const file = {
 			name: gfx[item],
@@ -379,7 +379,7 @@ function addFile() {
 
 	clearFileInput(itemImg)
 
-	let idx = files.push(itemObj) - 1
+	const idx = files.push(itemObj) - 1
 	addToItemTable(idx)
 }
 
@@ -399,24 +399,24 @@ function addToItemTable(idx) {
 		typeStr = 'Trinket'
 	}
 
-	let row = table.insertRow(-1)
+	const row = table.insertRow(-1)
 
-	let actionsCell = row.insertCell()
-	let spriteCell = row.insertCell(0)
-	let descCell = row.insertCell(0)
-	let nameCell = row.insertCell(0)
-	let oldNameCell = row.insertCell(0)
-	let typeCell = row.insertCell(0)
+	const actionsCell = row.insertCell()
+	const spriteCell = row.insertCell(0)
+	const descCell = row.insertCell(0)
+	const nameCell = row.insertCell(0)
+	const oldNameCell = row.insertCell(0)
+	const typeCell = row.insertCell(0)
 
 	// ========= Actions Cell
-	let span = document.createElement('span')
+	const span = document.createElement('span')
 	span.classList.add('icon', 'is-small')
 
-	let icon = document.createElement('i')
+	const icon = document.createElement('i')
 	icon.classList.add('fab', 'fa-solid', 'fa-trash')
 	icon.setAttribute('aria-hidden', 'true')
 
-	let btn = document.createElement('button')
+	const btn = document.createElement('button')
 	btn.classList.add('button', 'is-small', 'delete-button')
 
 	span.appendChild(icon)
@@ -428,7 +428,7 @@ function addToItemTable(idx) {
 	spriteCell.setAttribute('align', 'center')
 
 	// Image
-	let img = new Image()
+	const img = new Image()
 	img.width = '32'
 	img.height = '32'
 	img.style.verticalAlign = 'inherit'
@@ -440,7 +440,7 @@ function addToItemTable(idx) {
 	spriteCell.appendChild(img)
 
 	// Empty Image
-	let emptyImg = new Image()
+	const emptyImg = new Image()
 	emptyImg.width = '32'
 	emptyImg.height = '32'
 	emptyImg.style.verticalAlign = 'inherit'
@@ -450,14 +450,14 @@ function addToItemTable(idx) {
 	spriteCell.appendChild(emptyImg)
 
 	// Sprite Delete Button
-	let spriteSpan = document.createElement('span')
+	const spriteSpan = document.createElement('span')
 	spriteSpan.classList.add('icon', 'is-small')
 
-	let spriteIcon = document.createElement('i')
+	const spriteIcon = document.createElement('i')
 	spriteIcon.classList.add('fab', 'fa-solid', 'fa-trash')
 	spriteIcon.setAttribute('aria-hidden', 'true')
 
-	let spriteDeleteBtn = document.createElement('button')
+	const spriteDeleteBtn = document.createElement('button')
 	spriteDeleteBtn.classList.add('button', 'is-small')
 
 	spriteDeleteBtn.style.marginLeft = '5px'
@@ -516,7 +516,7 @@ function addToItemTable(idx) {
 
 	// Sprite Image
 	function changeSprite() {
-		let newSpriteInput = document.createElement('input')
+		const newSpriteInput = document.createElement('input')
 		newSpriteInput.type = 'file'
 		newSpriteInput.accept = 'image/x-png'
 		newSpriteInput.click()
@@ -531,7 +531,7 @@ function addToItemTable(idx) {
 
 			const imgNew = newSpriteInput.files[0]
 
-			let gfx = gfxs[currentType]
+			const gfx = gfxs[currentType]
 
 			const file = {
 				name: gfx[id],
