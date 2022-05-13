@@ -1,0 +1,35 @@
+.center {
+	margin: auto;
+	width: 60%;
+	padding: 10px;
+}
+
+.center-button {
+	margin: 0 auto;
+	display: block;
+}
+
+.delete-button {
+	width: 100%;
+	width: -webkit-fill-available;
+}
+
+body {
+	zoom: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+	select {
+		color: #b5b5b5;
+		background-color: black;
+	}
+
+	:root {
+		color-scheme: dark;
+	}
+
+	.delete-button {
+		width: 100%;
+		width: -webkit-fill-available;
+	}
+}
