@@ -613,13 +613,13 @@ async function downloadFinishedZip() {
 }
 
 // Handle changing to inline when using incompatible widths
-let state = 1
+let responsiveState = 1
 
 // Handle starting with low width
 $(document).ready(function () {
 	const width = $(window).width()
 	if (width < 1200) {
-		state = 2
+		responsiveState = 2
 		setSelectStyles()
 	}
 })
@@ -627,11 +627,11 @@ $(document).ready(function () {
 // Handle changing to low width (responsiveness)
 $(window).resize(function () {
 	const width = $(window).width()
-	if (width < 1200 && state == 1) {
-		state = 2
+	if (width < 1200 && responsiveState == 1) {
+		responsiveState = 2
 		setSelectStyles()
-	} else if (width > 1200 && state == 2) {
-		state = 1
+	} else if (width > 1200 && responsiveState == 2) {
+		responsiveState = 1
 		resetSelectStyles()
 	}
 })
@@ -668,3 +668,36 @@ function resetSelectStyles() {
 		'margin-bottom': '',
 	})
 }
+
+// Handle sidebar stuff
+
+let sidebarOpen = false
+
+function closeSidebar() {
+	$('#sidebar').css({
+		'width': ''
+	})
+	sidebarOpen = false
+}
+
+function openSidebar() {
+	$('#sidebar').css({
+		'width': '15%'
+	})
+	sidebarOpen = true
+}
+
+$(document).ready(function () {
+	// Open the menu
+	$('#menuBtn').click(function () {
+		if(sidebarOpen){
+			closeSidebar()
+		} else {
+			openSidebar()
+		}
+	})
+
+	$('#sidebar').click(function () {
+		closeSidebar()
+	})
+})
