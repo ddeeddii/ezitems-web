@@ -675,14 +675,14 @@ let sidebarOpen = false
 
 function closeSidebar() {
 	$('#sidebar').css({
-		'width': ''
+		width: '',
 	})
 	sidebarOpen = false
 }
 
 function openSidebar() {
 	$('#sidebar').css({
-		'width': '15%'
+		width: '15%',
 	})
 	sidebarOpen = true
 }
@@ -690,7 +690,7 @@ function openSidebar() {
 $(document).ready(function () {
 	// Open the menu
 	$('#menuBtn').click(function () {
-		if(sidebarOpen){
+		if (sidebarOpen) {
 			closeSidebar()
 		} else {
 			openSidebar()
