@@ -12,7 +12,7 @@ Upgrade/Alternative to `isaac-ez-name-changer`.
 ### Option 1
 Run the [GitHub pages](https://ddeeddii.github.io/ezitems-web/) in your preferred browser
 
-Alternatively, you can run the latest **beta** version [here](https://ezitems-beta.vercel.app/).
+Alternatively, you can run the latest **preview** version [here](https://ezitems-preview.vercel.app/).
 
 ### Option 2
 Clone the repo and start a local server
