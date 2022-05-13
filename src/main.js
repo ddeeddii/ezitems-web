@@ -637,10 +637,10 @@ $(window).resize(function () {
 })
 
 function setSelectStyles() {
-	$('#imageUpload').css({display: 'inline'})
+	$('#imageUpload').css({'display': 'inline'})
 
 	$('#typeItemSelectors').css({
-		display: 'inline',
+		'display': 'inline',
 		'justify-content': '',
 		'min-width': 'fit-content',
 		'margin-top': '5px',
@@ -654,10 +654,10 @@ function setSelectStyles() {
 }
 
 function resetSelectStyles() {
-	$('#imageUpload').css({display: ''})
+	$('#imageUpload').css({'display': ''})
 
 	$('#typeItemSelectors').css({
-		display: 'flex',
+		'display': 'flex',
 		'justify-content': 'flex-end',
 		'min-width': '',
 		'margin-top': '',
@@ -675,14 +675,14 @@ let sidebarOpen = false
 
 function closeSidebar() {
 	$('#sidebar').css({
-		width: '',
+		'width': '',
 	})
 	sidebarOpen = false
 }
 
 function openSidebar() {
 	$('#sidebar').css({
-		width: '15%',
+		'width': '15%',
 	})
 	sidebarOpen = true
 }
