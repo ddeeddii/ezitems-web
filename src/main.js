@@ -115,6 +115,63 @@ let removedOptions = {
 	2: [],
 }
 
+
+// Proper Item implementation
+class Item {
+    /**
+    * Create an Item
+    * @param {number} id - ID
+    * @param {number} type - Type
+    */
+	constructor(id, type) {
+		this.id = id
+		this.type = type
+
+		this.desc = ''
+		this.name = ''
+		this.sprite = {
+			img: undefined,
+			name: undefined,
+		}
+
+        this.ignore = false
+	}
+
+    /**
+    * Add item & description
+    * @param {string} name - Name
+    * @param {string} desc - Description
+    */
+    addAttributes(name, desc){
+        this.name = name
+        this.desc = desc
+        return this
+    }
+
+    /**
+    * Add a sprite
+    * @param {File} img - Sprite Image
+    * @param {string} name - Image Name
+    */
+    addSprite(img, name){
+        this.sprite.img = img
+        this.sprite.name = name
+        return this
+    }
+
+    hasSprite(){
+        console.log('HasSprite():', this.sprite.img != undefined);
+        return this.sprite.img != undefined
+    }
+
+	removeSprite(){
+		this.sprite.img = undefined
+		this.sprite.name = undefined
+		return this
+	}
+
+}
+
 // ================================== Helper functions start
 
 function clearFileInput(input) {
@@ -161,18 +218,19 @@ function getItemTrinketLines(lua) {
 }
 
 function appendItemsToLua() {
-	for (const itemObj of files) {
-		if (itemObj == 'ignoreme') {
+	for (const item of files) {
+		if (item.ignore) {
 			continue
 		}
 
-		const type = itemObj['type']
-		const id = itemObj['id']
+		const type = item.type
+		const id = item.id
 
 		// After renaming in the table, they arent sanitizied
 		// So they are sanitized here again
-		const name = itemObj['name'].replace(/['"]+/g, '').replace(/\\/g, '')
-		const desc = itemObj['desc'].replace(/['"]+/g, '').replace(/\\/g, '')
+        console.log(item);
+		const name = item.name.replace(/['"]+/g, '').replace(/\\/g, '')
+		const desc = item.desc.replace(/['"]+/g, '').replace(/\\/g, '')
 
 		if (name == '' && desc == '') {
 			continue
@@ -201,17 +259,11 @@ function compileSprites() {
 		trinket: undefined,
 	}
 
-	for (const itemObj of files) {
-		if (
-			itemObj == 'ignoreme' ||
-			itemObj['sprite'] == 'ignoreme' ||
-			itemObj['sprite'] == undefined
-		) {
-			continue
-		}
+	for (const item of files) {
+		if(item.ignore || !item.hasSprite()) { continue }
 
-		const sprite = itemObj['sprite']
-		const type = itemObj['type']
+		const sprite = item.sprite
+		const type = item.type
 
 		// Create root gfx folder if not created already
 		if (folders.root == undefined) {
@@ -260,10 +312,8 @@ function validateFileName(filename) {
 
 function realFilesLength() {
 	let length = 0
-	for (const itemObj of files) {
-		if (itemObj == 'ignoreme') {
-			continue
-		}
+	for (const item of files) {
+		if (item.ignore) { continue }
 		length += 1
 	}
 
@@ -337,23 +387,16 @@ function addFile() {
 		createLua(modName)
 	} // Create main.lua if there isnt one
 
-	const itemObj = []
+    const itemId = $('#itemId').val()
 
-	const item = $('#itemId').val()
-	itemObj['type'] = currentType
-	itemObj['id'] = item
+	const item = new Item(itemId, currentType)
 
 	const itemImg = $('#itemImg')[0]
 	const img = itemImg.files[0]
 	if (img != undefined) {
 		const gfx = gfxs[currentType]
 
-		const file = {
-			name: gfx[item],
-			img: img,
-		}
-
-		itemObj['sprite'] = file
+        item.addSprite(img, gfx[itemId])
 	}
 
 	let itemName = $('#itemName').val()
@@ -364,8 +407,7 @@ function addFile() {
 	itemName = itemName.replace(/['"]+/g, '').replace(/\\/g, '')
 	itemDesc = itemDesc.replace(/['"]+/g, '').replace(/\\/g, '')
 
-	itemObj['name'] = itemName
-	itemObj['desc'] = itemDesc
+    item.addAttributes(itemName, itemDesc)
 
 	if (img == undefined && itemName == '' && itemDesc == '') {
 		alert('Item has no image, name and description!')
@@ -376,23 +418,23 @@ function addFile() {
 	$('#itemName').val('')
 	$('#itemDesc').val('')
 
-	$(`#itemId option[value=${item}]`).remove()
-	removedOptions[currentType].push(item)
+	$(`#itemId option[value=${itemId}]`).remove()
+	removedOptions[currentType].push(itemId)
 
 	clearFileInput(itemImg)
 
-	const idx = files.push(itemObj) - 1
+	const idx = files.push(item) - 1
 	addToItemTable(idx)
 }
 
 function addToItemTable(idx) {
 	const table = $('#itemTable')[0]
-	const itemObj = files[idx]
+	const item = files[idx]
 
-	const type = itemObj['type']
-	const id = itemObj['id']
-	const name = itemObj['name']
-	const desc = itemObj['desc']
+	const type = item.type
+	const id = item.id
+	const name = item.name
+	const desc = item.desc
 
 	let typeStr
 	if (type == ItemType.Item) {
@@ -435,8 +477,8 @@ function addToItemTable(idx) {
 	img.height = '32'
 	img.style.verticalAlign = 'inherit'
 
-	if (itemObj['sprite'] != undefined) {
-		img.src = URL.createObjectURL(itemObj['sprite']['img'])
+	if (item.hasSprite()) {
+		img.src = URL.createObjectURL(item.sprite.img)
 	}
 
 	spriteCell.appendChild(img)
@@ -464,7 +506,7 @@ function addToItemTable(idx) {
 
 	spriteDeleteBtn.style.marginLeft = '5px'
 
-	if (itemObj['sprite'] == undefined) {
+	if (!item.hasSprite()) {
 		spriteDeleteBtn.style.display = 'none'
 	}
 
@@ -496,7 +538,7 @@ function addToItemTable(idx) {
 	// ========= Event Listeners
 	// Remove button
 	btn.addEventListener('click', (evt) => {
-		files[idx] = 'ignoreme'
+		files[idx].ignore = true
 		row.remove()
 
 		// WARNING
@@ -533,16 +575,11 @@ function addToItemTable(idx) {
 
 			const imgNew = newSpriteInput.files[0]
 
-			const gfx = gfxs[currentType]
+			const gfx = gfxs[item.type]
 
-			const file = {
-				name: gfx[id],
-				img: imgNew,
-			}
+			item.addSprite(imgNew, gfx[id])
 
-			itemObj['sprite'] = file
-
-			img.src = URL.createObjectURL(itemObj['sprite']['img'])
+			img.src = URL.createObjectURL(item.sprite.img)
 		}
 	}
 
@@ -555,7 +592,7 @@ function addToItemTable(idx) {
 		emptyImg.style.display = ''
 		spriteDeleteBtn.style.display = 'none'
 
-		itemObj['sprite'] = 'ignoreme'
+		item.removeSprite()
 	})
 
 	// Exit confirmation
@@ -845,7 +882,6 @@ function appendItemsFromZip() {
 	// Parse Lua
 	if (lua != undefined) {
 		parseExistingLua(lua)
-		//console.log('Finished parsing lua:', pseudoItems)
 	}
 
 	// Parse Images
@@ -870,7 +906,6 @@ function appendItemsFromZip() {
 		try {
 			pseudoItems[objItemType][objItemId]['sprite'] = {}
 		} catch (e) {
-			//console.log(`Sprite ${obj.name} doesnt have item attatched`)
 			isEmpty = true
 		}
 
@@ -899,49 +934,36 @@ function appendItemsFromZip() {
 	// All defined items are now in pseudoItems
 	// Add all items into files and into the table
 	for (const [type, rootObj] of Object.entries(pseudoItems)) {
-		for (const [idx, obj] of Object.entries(rootObj)) {
+		for (const [_, obj] of Object.entries(rootObj)) {
 			const name = obj['name']
 			const desc = obj['desc']
 
 			const sprite = obj['sprite']
 
-			const itemObj = []
+			const item = new Item()
 
-			itemObj['id'] = obj.id
-			itemObj['type'] = type
+			item.id = obj.id
+			item.type = type
 
 			if (name == undefined && desc == undefined) {
 				// Only sprite
-				const file = {
-					name: sprite['name'],
-					img: sprite['img'],
-				}
+                item.addSprite(sprite['img'], sprite['name'])
 
-				itemObj['sprite'] = file
-				itemObj['name'] = ''
-				itemObj['desc'] = ''
 			} else if ( sprite['img'] == undefined && sprite['name'] == undefined) {
 				// Only name/desc
-				itemObj['name'] = name
-				itemObj['desc'] = desc
-			} else {
-				// Both name & sprite present
-				const file = {
-					name: sprite['name'],
-					img: sprite['img'],
-				}
+                item.addAttributes(name, desc)
 
-				itemObj['sprite'] = file
-				itemObj['name'] = name
-				itemObj['desc'] = desc
+			} else {
+				// All combined
+                item.addSprite(sprite['img'], sprite['name'])
+                item.addAttributes(name, desc)
 			}
 
-			//console.log('Finished item obj:', itemObj);
-
-			const idx = files.push(itemObj) - 1
+			const idx = files.push(item) - 1
 			addToItemTable(idx)
 		}
 	}
+    // end todo
 }
 
 // Get the zip
