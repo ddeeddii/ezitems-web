@@ -1,0 +1,74 @@
+.center {
+	margin: auto;
+	width: 60%;
+	padding: 10px;
+}
+
+.center-button {
+	margin: 0 auto;
+	display: block;
+}
+
+body {
+	zoom: 1.5;
+}
+
+.delete-button {
+	width: 100%;
+	width: -webkit-fill-available;
+}
+
+@media (prefers-color-scheme: dark) {
+	select {
+		color: #b5b5b5;
+		background-color: black;
+	}
+
+	:root {
+		color-scheme: dark;
+	}
+}
+
+/* ============================ Sidebar */
+.sidebar {
+	height: 100%;
+	width: 0;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background-color: #dedede;
+	overflow-x: hidden;
+	padding-top: 60px;
+	transition: 0.5s;
+
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.sidebar a {
+	text-decoration: none;
+	font-size: 25px;
+	color: #818181;
+	display: block;
+	transition: 0.3s;
+	white-space: nowrap;
+}
+
+.sidebar a:hover {
+	color: #f1f1f1;
+}
+
+.sidebar .closebtn {
+	position: absolute;
+	top: 0;
+	font-size: 36px;
+}
+
+/* Sidebar Dark Theme */
+@media (prefers-color-scheme: dark) {
+	.sidebar {
+		background-color: #0a0a0a;
+	}
+}

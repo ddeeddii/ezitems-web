@@ -12,6 +12,8 @@ Upgrade/Alternative to `isaac-ez-name-changer`.
 ### Option 1
 Run the [GitHub pages](https://ddeeddii.github.io/ezitems-web/) in your preferred browser
 
+Alternatively, you can run the latest **preview** version [here](https://ezitems-preview.vercel.app/).
+
 ### Option 2
 Clone the repo and start a local server
 
@@ -41,6 +43,7 @@ For any problems with the app, feel free to submit an issue or DM me on discord
 
 **Libraries** - `ezitems-web` uses the following libraries:
 - [JQuery](https://jquery.com/)
+- [JSZip](https://github.com/Stuk/jszip)
 - [Bulma](https://github.com/jgthms/bulma)
 - [bulma-prefers-dark](https://github.com/jloh/bulma-prefers-dark)
 - [Font Awesome](https://fontawesome.com/)

@@ -4,74 +4,44 @@
 		<meta charset="utf-8" />
 		<title>EzItems</title>
 
+		<!-- OpenGraph metadata -->
 		<meta content="EzItems" property="og:title" />
 		<meta content="Simplest way of creating item rename & resprite mods for Isaac" property="og:description" />
 		<meta content="https://ddeeddii.github.io/ezitems-web/" property="og:url" />
 		<meta content="#0f81cc" data-react-helmet="true" name="theme-color" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
+		<!-- Icon -->
 		<link rel="icon" type="image/x-icon" href="data/favicon.ico">
 
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Libraries -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
 		<link rel="stylesheet" type="text/css" href="https://unpkg.com/bulma-prefers-dark" />
 		<script src="https://kit.fontawesome.com/9f81aafb5c.js" crossorigin="anonymous"></script>
-
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-		<style>
-			.center {
-				margin: auto;
-				width: 60%;
-				padding: 10px;
-			}
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.9.1/jszip.min.js" integrity="sha512-amNoSoOK3jIKx6qlDrv36P4M/h7vc6CHwiBU3XG9/1LW0ZSNe8E3iZL1tPG/VnfCrVrZc2Zv47FIJ7fyDX4DMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-			.center-button {
-				margin: 0 auto;
-				display: block;
-			}
+		<!-- Scripts -->
+		<link href="src/main.css" rel="stylesheet" type="text/css" />
+		<script src="src/main.js" type="module"></script>
 
-			.delete-button {
-				width: 100%;
-				width: -webkit-fill-available;
-			}
-
-			body {
-				zoom: 1.5;
-			}
-
-			@media (prefers-color-scheme: dark) {
-				select {
-					color: #b5b5b5;
-					background-color: black;
-				}
-
-				:root {
-					color-scheme: dark;
-				}
-
-				.delete-button {
-					width: 100%;
-					width: -webkit-fill-available;
-				}
-			}
-		</style>
 	</head>
 	<body>
 		<div class="center">
-			<script src="main.js" type="module"></script>
 
 			<div>
+				<!-- Download Button -->
 				<button name="button" id="submitBtn" class="button is-danger center-button">Download </button>
 
+				<!-- Menu Button -->
 				<button 
 					class="button is-small center-button"
 					style="margin-top: 5px;"
-					onclick="window.open('https://github.com/ddeeddii/ezitems-web','_blank')">
-				  <span class="icon is-small">
-					<i class="fab fa-github"></i>
-				  </span>
-				  <span>GitHub</span>
+					id="menuBtn">
+				  <span>Menu</span>
 				</button>
-			  </div>
+
+			</div>
 
 			<br />
 
@@ -88,15 +58,18 @@
 			<br>
 
 			<div>
+				<!-- Item Name Input -->
 				<label for="itemName">New name</label>
 				<input type="text" id="itemName" name="itemName" class="input is-normal is-primary" placeholder="My cool item" />
 				<br />
 
+				<!-- New Description Input -->
 				<label for="itemDesc">New description</label>
 				<input type="text" id="itemDesc" name="itemDesc" class="input is-info" placeholder="My cool description" />
 			</div>
 
 			<div class="file has-name" id="imageUpload" style="margin-top: 5px">
+				<!-- Sprite Upload -->
 				<label class="file-label" id="imageUploadSpan">
 					<input type="file" id="itemImg" name="img" accept="image/x-png" class="file-input" />
 					<span class="file-cta">
@@ -106,6 +79,7 @@
 				</label>
 
 				<div style="display: flex; padding: 0px; justify-content: flex-end;" class="center" id="typeItemSelectors">
+					<!-- Select Item Type -->
 					<span>
 						<select name="itemType" id="itemType" class="select is-primary" style="margin-right: 11px">
 							<option value="1">Item</option>
@@ -113,12 +87,14 @@
 						</select>
 					</span>
 
+					<!-- Select Item Id -->
 					<span>
 						<select style="width: 200px" name="itemId" id="itemId" class="select is-primary"></select>
 					</span>
 				</div>
 			</div>
 
+			<!-- New Item -->
 			<span>
 				<button name="button" id="newItemBtn" class="button is-primary center-button" style="margin-top: 5px"> Add Item </button>
 			</span>
@@ -126,6 +102,7 @@
 
 		</div>
 
+		<!-- Item List -->
 		<div class="" style="overflow-y: auto; padding-bottom: 10px;">
 			<table id="itemTable" class="table is-bordered is-striped" style="margin: auto;">
 				<tr>
@@ -137,6 +114,12 @@
 					<th>Actions</th>
 				</tr>
 			</table>
+		</div>
+
+		<div id="sidebar" class="sidebar">
+			<a class="closebtn">&times;</a>
+			<a href="https://github.com/ddeeddii/ezitems-web" target="_blank">GitHub</a>
+			<a id="uploadExisting">Import mod</a>
 		</div>
 
 	</body>

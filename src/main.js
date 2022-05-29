@@ -81,13 +81,12 @@ if #items ~= 0 then
     end)
 end
 `
+let zip = new JSZip()
 
-import {downloadZip} from 'https://cdn.jsdelivr.net/npm/client-zip/index.js'
-
-import item_gfxs from './data/item_gfxs.json' assert {type: 'json'}
-import item_names from './data/item_idtoname.json' assert {type: 'json'}
-import trinket_gfxs from './data/trinket_gfxs.json' assert {type: 'json'}
-import trinket_names from './data/trinket_idtoname.json' assert {type: 'json'}
+import item_gfxs from '../data/item_gfxs.json' assert {type: 'json'}
+import item_names from '../data/item_idtoname.json' assert {type: 'json'}
+import trinket_gfxs from '../data/trinket_gfxs.json' assert {type: 'json'}
+import trinket_names from '../data/trinket_idtoname.json' assert {type: 'json'}
 
 const ItemType = {
 	Item: 1,
@@ -109,11 +108,6 @@ const names = {
 const gfxs = {
 	1: item_gfxs,
 	2: trinket_gfxs,
-}
-
-const path = {
-	1: 'resources/gfx/items/collectibles',
-	2: 'resources/gfx/items/trinkets',
 }
 
 let removedOptions = {
@@ -154,6 +148,18 @@ function createLua(name) {
 	currentLuaCreated = true
 }
 
+function getItemTrinketLines(lua) {
+	let itemLine
+	let trinketLine
+
+	const lines = lua.split('\n')
+
+	itemLine = lines.indexOf('  --$$$ITEMS-START$$$') + 1
+	trinketLine = lines.indexOf('  --$$$TRINKETS-START$$$') + 1
+
+	return [itemLine, trinketLine]
+}
+
 function appendItemsToLua() {
 	for (const itemObj of files) {
 		if (itemObj == 'ignoreme') {
@@ -172,25 +178,11 @@ function appendItemsToLua() {
 			continue
 		}
 
-		let i = 0
-		let trinketLine
-		let itemLine
-
-		let lines = currentLua.split('\n')
-		for (const line of lines) {
-			i += 1
-			if (line.includes('--$$$ITEMS-START$$$')) {
-				itemLine = i
-			} else if (line.includes('--$$$TRINKETS-START$$$')) {
-				trinketLine = i
-			}
-
-			if (trinketLine != undefined && itemLine != undefined) {
-				break
-			}
-		}
+		const [itemLine, trinketLine] = getItemTrinketLines(currentLua)
 
 		const text = `  {${id}, "${name}", "${desc}"},`
+
+		const lines = currentLua.split('\n')
 
 		if (type == ItemType.Item) {
 			lines.splice(itemLine, 0, text)
@@ -203,19 +195,48 @@ function appendItemsToLua() {
 }
 
 function compileSprites() {
-	let sprites = []
+	const folders = {
+		root: undefined,
+		item: undefined,
+		trinket: undefined,
+	}
 
 	for (const itemObj of files) {
-		if (itemObj == 'ignoreme' || itemObj['sprite'] == 'ignoreme') {
+		if (
+			itemObj == 'ignoreme' ||
+			itemObj['sprite'] == 'ignoreme' ||
+			itemObj['sprite'] == undefined
+		) {
 			continue
 		}
 
-		if (itemObj['sprite'] != undefined) {
-			sprites.push(itemObj['sprite'])
+		const sprite = itemObj['sprite']
+		const type = itemObj['type']
+
+		// Create root gfx folder if not created already
+		if (folders.root == undefined) {
+			folders.root = zip
+				.folder(currentFolderName)
+				.folder('resources')
+				.folder('gfx')
+				.folder('items')
+		}
+
+		// Handle adding the sprites
+		if (type == ItemType.Item) {
+			if (folders.item == undefined) {
+				folders.item = folders.root.folder('collectibles')
+			}
+
+			folders.item.file(sprite.name, sprite.img)
+		} else if (type == ItemType.Trinket) {
+			if (folders.trinket == undefined) {
+				folders.trinket = folders.root.folder('trinkets')
+			}
+
+			folders.trinket.file(sprite.name, sprite.img)
 		}
 	}
-
-	return sprites
 }
 
 function clearAllInputs() {
@@ -237,7 +258,7 @@ function validateFileName(filename) {
 	return true
 }
 
-function realFilesLength(){
+function realFilesLength() {
 	let length = 0
 	for (const itemObj of files) {
 		if (itemObj == 'ignoreme') {
@@ -247,6 +268,10 @@ function realFilesLength(){
 	}
 
 	return length
+}
+
+function getKeyByValue(object, value) {
+	return Object.keys(object).find((key) => object[key] == value)
 }
 
 // ================================== Helper functions end
@@ -312,7 +337,7 @@ function addFile() {
 		createLua(modName)
 	} // Create main.lua if there isnt one
 
-	let itemObj = []
+	const itemObj = []
 
 	const item = $('#itemId').val()
 	itemObj['type'] = currentType
@@ -321,11 +346,11 @@ function addFile() {
 	const itemImg = $('#itemImg')[0]
 	const img = itemImg.files[0]
 	if (img != undefined) {
-		let gfx = gfxs[currentType]
+		const gfx = gfxs[currentType]
+
 		const file = {
-			name: `${currentFolderName}/${path[currentType]}/${gfx[item]}`,
-			lastModified: new Date(),
-			input: img,
+			name: gfx[item],
+			img: img,
 		}
 
 		itemObj['sprite'] = file
@@ -356,7 +381,7 @@ function addFile() {
 
 	clearFileInput(itemImg)
 
-	let idx = files.push(itemObj) - 1
+	const idx = files.push(itemObj) - 1
 	addToItemTable(idx)
 }
 
@@ -376,24 +401,24 @@ function addToItemTable(idx) {
 		typeStr = 'Trinket'
 	}
 
-	let row = table.insertRow(-1)
+	const row = table.insertRow(-1)
 
-	let actionsCell = row.insertCell()
-	let spriteCell = row.insertCell(0)
-	let descCell = row.insertCell(0)
-	let nameCell = row.insertCell(0)
-	let oldNameCell = row.insertCell(0)
-	let typeCell = row.insertCell(0)
+	const actionsCell = row.insertCell()
+	const spriteCell = row.insertCell(0)
+	const descCell = row.insertCell(0)
+	const nameCell = row.insertCell(0)
+	const oldNameCell = row.insertCell(0)
+	const typeCell = row.insertCell(0)
 
 	// ========= Actions Cell
-	let span = document.createElement('span')
+	const span = document.createElement('span')
 	span.classList.add('icon', 'is-small')
 
-	let icon = document.createElement('i')
+	const icon = document.createElement('i')
 	icon.classList.add('fab', 'fa-solid', 'fa-trash')
 	icon.setAttribute('aria-hidden', 'true')
 
-	let btn = document.createElement('button')
+	const btn = document.createElement('button')
 	btn.classList.add('button', 'is-small', 'delete-button')
 
 	span.appendChild(icon)
@@ -405,19 +430,19 @@ function addToItemTable(idx) {
 	spriteCell.setAttribute('align', 'center')
 
 	// Image
-	let img = new Image()
+	const img = new Image()
 	img.width = '32'
 	img.height = '32'
 	img.style.verticalAlign = 'inherit'
-	
+
 	if (itemObj['sprite'] != undefined) {
-		img.src = URL.createObjectURL(itemObj['sprite']['input'])
+		img.src = URL.createObjectURL(itemObj['sprite']['img'])
 	}
 
 	spriteCell.appendChild(img)
 
 	// Empty Image
-	let emptyImg = new Image()
+	const emptyImg = new Image()
 	emptyImg.width = '32'
 	emptyImg.height = '32'
 	emptyImg.style.verticalAlign = 'inherit'
@@ -427,19 +452,19 @@ function addToItemTable(idx) {
 	spriteCell.appendChild(emptyImg)
 
 	// Sprite Delete Button
-	let spriteSpan = document.createElement('span')
+	const spriteSpan = document.createElement('span')
 	spriteSpan.classList.add('icon', 'is-small')
 
-	let spriteIcon = document.createElement('i')
+	const spriteIcon = document.createElement('i')
 	spriteIcon.classList.add('fab', 'fa-solid', 'fa-trash')
 	spriteIcon.setAttribute('aria-hidden', 'true')
 
-	let spriteDeleteBtn = document.createElement('button')
+	const spriteDeleteBtn = document.createElement('button')
 	spriteDeleteBtn.classList.add('button', 'is-small')
 
 	spriteDeleteBtn.style.marginLeft = '5px'
 
-	if(itemObj['sprite'] == undefined){
+	if (itemObj['sprite'] == undefined) {
 		spriteDeleteBtn.style.display = 'none'
 	}
 
@@ -464,7 +489,7 @@ function addToItemTable(idx) {
 
 	// ========= Vanilla Name Cell
 	oldNameCell.innerHTML = names[type][id]
-	
+
 	// ========= Type Cell
 	typeCell.innerHTML = typeStr
 
@@ -486,21 +511,21 @@ function addToItemTable(idx) {
 		$('#itemId option').remove()
 		fillItemSelector(currentType)
 
-		if(realFilesLength() == 0){
+		if (realFilesLength() == 0) {
 			window.onbeforeunload = null
 		}
 	})
 
 	// Sprite Image
 	function changeSprite() {
-		let newSpriteInput = document.createElement('input')
+		const newSpriteInput = document.createElement('input')
 		newSpriteInput.type = 'file'
 		newSpriteInput.accept = 'image/x-png'
 		newSpriteInput.click()
 
 		newSpriteInput.onchange = () => {
 			// Change the empty image for the actual image
-			if(spriteDeleteBtn.style.display = 'none'){ 
+			if ((spriteDeleteBtn.style.display = 'none')) {
 				img.style.display = ''
 				emptyImg.style.display = 'none'
 				spriteDeleteBtn.style.display = ''
@@ -508,15 +533,16 @@ function addToItemTable(idx) {
 
 			const imgNew = newSpriteInput.files[0]
 
+			const gfx = gfxs[currentType]
+
 			const file = {
-				name: `${currentFolderName}/${path[type]}/${gfxs[type][id]}`,
-				lastModified: new Date(),
-				input: imgNew,
+				name: gfx[id],
+				img: imgNew,
 			}
 
 			itemObj['sprite'] = file
 
-			img.src = URL.createObjectURL(itemObj['sprite']['input'])
+			img.src = URL.createObjectURL(itemObj['sprite']['img'])
 		}
 	}
 
@@ -533,34 +559,33 @@ function addToItemTable(idx) {
 	})
 
 	// Exit confirmation
-	if( typeof(window.onbeforeunload) != 'function' ){
-		window.onbeforeunload = function() {
+	if (typeof window.onbeforeunload != 'function') {
+		window.onbeforeunload = function () {
 			return true
 		}
 	}
 }
 
 async function downloadFinishedZip() {
-	let compiledFiles = compileSprites()
-
+	compileSprites()
 	appendItemsToLua()
-	const lua = {
-		name: `${currentFolderName}/main.lua`,
-		lastModified: new Date(),
-		input: currentLua,
-	}
-	compiledFiles.push(lua)
+	zip.folder(currentFolderName).file('main.lua', currentLua)
 
-	const blob = await downloadZip(compiledFiles).blob()
+	// Why is .folder(currentFolderName) everywhere instead of
+	// creating a folder obj from `zip` and using that instead of `zip`?
+	// Simple - it doesn't work, and I dont know why
 
-	// Make and click a temporary link to download the Blob
-	const link = document.createElement('a')
-	link.href = URL.createObjectURL(blob)
-	link.download = 'mod.zip'
-	link.click()
-	link.remove()
+	zip.generateAsync({type: 'blob'}).then((content) => {
+		// Make and click a temporary link to download the Blob
+		const link = document.createElement('a')
+		link.href = URL.createObjectURL(content)
+		link.download = 'mod.zip'
+		link.click()
+		link.remove()
+	})
 
 	// Clear all data
+	zip = new JSZip()
 	files = []
 	currentLua = template
 	currentLuaCreated = false
@@ -586,17 +611,17 @@ async function downloadFinishedZip() {
 	$('#itemTable td').remove()
 
 	// Remove the exit confirmation
-	window.onbeforeunload = null;
+	window.onbeforeunload = null
 }
 
 // Handle changing to inline when using incompatible widths
-let state = 1
+let responsiveState = 1
 
 // Handle starting with low width
 $(document).ready(function () {
 	const width = $(window).width()
 	if (width < 1200) {
-		state = 2
+		responsiveState = 2
 		setSelectStyles()
 	}
 })
@@ -604,11 +629,11 @@ $(document).ready(function () {
 // Handle changing to low width (responsiveness)
 $(window).resize(function () {
 	const width = $(window).width()
-	if (width < 1200 && state == 1) {
-		state = 2
+	if (width < 1200 && responsiveState == 1) {
+		responsiveState = 2
 		setSelectStyles()
-	} else if (width > 1200 && state == 2) {
-		state = 1
+	} else if (width > 1200 && responsiveState == 2) {
+		responsiveState = 1
 		resetSelectStyles()
 	}
 })
@@ -623,9 +648,10 @@ function setSelectStyles() {
 		'margin-top': '5px',
 	})
 
+	// @ts-ignore
 	$('#imageUploadSpan').css({
 		'margin-top': '5px',
-		'margin-bottom': '5px'
+		'margin-bottom': '5px',
 	})
 }
 
@@ -641,6 +667,301 @@ function resetSelectStyles() {
 
 	$('#imageUploadSpan').css({
 		'margin-top': '',
-		'margin-bottom': ''
+		'margin-bottom': '',
 	})
 }
+
+// Handle sidebar stuff
+
+let sidebarOpen = false
+
+function closeSidebar() {
+	$('#sidebar').css({
+		'width': '',
+	})
+	sidebarOpen = false
+}
+
+function openSidebar() {
+	$('#sidebar').css({
+		'width': '15%',
+	})
+	sidebarOpen = true
+}
+
+$(document).ready(function () {
+	// Open the menu
+	$('#menuBtn').click(function () {
+		if (sidebarOpen) {
+			closeSidebar()
+		} else {
+			openSidebar()
+		}
+	})
+
+	$('#sidebar').click(function () {
+		closeSidebar()
+	})
+})
+
+// ======================= Edit existing mods
+
+let currentParsedZip = []
+
+// Note
+// This is my first time working with async code
+// Proceed with caution
+function readLua(zip, path) {
+	return new Promise((resolve, reject) => {
+		zip.files[path].async('string').then(function (fileData) {
+			const lua = {
+				name: 'main.lua',
+				type: 'lua',
+				content: fileData,
+			}
+
+			resolve(lua)
+		})
+	})
+}
+
+function readPng(zip, path) {
+	return new Promise((resolve, reject) => {
+		zip.files[path].async('arraybuffer').then(function (fileData) {
+			const buffer = new Uint8Array(fileData)
+			const blob = new Blob([buffer.buffer])
+
+			const filename = path.replace(/^.*[\\\/]/, '')
+
+			const img = {
+				name: filename,
+				type: 'gfx',
+				content: blob,
+			}
+
+			resolve(img)
+		})
+	})
+}
+
+async function getZipContents(userZip) {
+	JSZip.loadAsync(userZip).then(async (zip) => {
+		for (const path of Object.keys(zip.files)) {
+			const extension = path.split('.').pop()
+
+			if (extension == 'lua') {
+				const lua = await readLua(zip, path)
+				currentParsedZip.push(lua)
+			} else if (extension == 'png') {
+				const img = await readPng(zip, path)
+				currentParsedZip.push(img)
+			}
+		}
+		appendItemsFromZip()
+	})
+}
+
+function getZipLua() {
+	for (const obj of currentParsedZip) {
+		const type = obj.type
+
+		if (type == 'lua') {
+			return obj
+		}
+	}
+}
+
+let pseudoItems = {
+	1: [],
+	2: [],
+}
+
+const parseLineRe = /{|}|"/g
+function parseItemLine(line, type) {
+	if (line == '' || line == '}') {
+		return
+	}
+
+	// Slice removes the last comma, which would mess with the split
+	line = line.replace(parseLineRe, '').slice(0, -1)
+
+	const lineContent = line.split(', ')
+
+	// Remove the first character, which is always empty space
+	lineContent[0] = lineContent[0].substring(2)
+
+	pseudoItems[type][lineContent[0]] = {
+		id: lineContent[0],
+		name: lineContent[1],
+		desc: lineContent[2],
+		sprite: {
+			img: undefined,
+			name: undefined,
+		},
+	}
+}
+
+function parseExistingLua(lua) {
+	const luaContent = lua.content
+
+	const [itemLine, trinketLine] = getItemTrinketLines(luaContent)
+
+	const lines = luaContent.split('\n')
+
+	const itemEnd = lines.indexOf('}') + 1
+	const trinketEnd = lines.indexOf('}', itemEnd) + 1
+
+	// Parse Items
+	for (let currentLine = itemLine; currentLine < itemEnd; currentLine++) {
+		parseItemLine(lines[currentLine], ItemType.Item)
+	}
+
+	// Parse Trinkets
+	for (
+		let currentLine = trinketLine;
+		currentLine < trinketEnd;
+		currentLine++
+	) {
+		parseItemLine(lines[currentLine], ItemType.Trinket)
+	}
+}
+
+function getItemInfoFromGfx(name) {
+	const itemAttempt = getKeyByValue(item_gfxs, name)
+	const trinketAttempt = getKeyByValue(trinket_gfxs, name)
+
+	if (itemAttempt == undefined && trinketAttempt == undefined) {
+		return [undefined, undefined]
+	} else if (itemAttempt != undefined) {
+		return [ItemType.Item, itemAttempt]
+	} else {
+		return [ItemType.Trinket, trinketAttempt]
+	}
+}
+
+function appendItemsFromZip() {
+	const lua = getZipLua()
+
+	// Parse Lua
+	if (lua != undefined) {
+		parseExistingLua(lua)
+		//console.log('Finished parsing lua:', pseudoItems)
+	}
+
+	// Parse Images
+	currentParsedZip.forEach((obj) => {
+		const objType = obj.type
+		if (objType != 'gfx') {
+			return
+		}
+
+		const objName = obj.name
+		const [objItemType, objItemId] = getItemInfoFromGfx(objName)
+
+		if (objItemType == undefined && objItemId == undefined) {
+			alert(
+				`Sprite name ${objName} is not a item nor a trinket name!\nThe sprite will be ignored.`
+			)
+			return
+		}
+
+		let isEmpty = false
+
+		try {
+			pseudoItems[objItemType][objItemId]['sprite'] = {}
+		} catch (e) {
+			//console.log(`Sprite ${obj.name} doesnt have item attatched`)
+			isEmpty = true
+		}
+
+		const file = new File([obj.content], 'sprite.png')
+
+		if (!isEmpty) {
+			const itemMatch = pseudoItems[objItemType][objItemId]
+
+			itemMatch['sprite'] = {
+				img: file,
+				name: objName,
+			}
+		} else {
+			pseudoItems[objItemType][objItemId] = {
+				id: objItemId,
+				name: undefined,
+				desc: undefined,
+				sprite: {
+					img: file,
+					name: objName,
+				},
+			}
+		}
+	})
+
+	// All defined items are now in pseudoItems
+	// Add all items into files and into the table
+	for (const [type, rootObj] of Object.entries(pseudoItems)) {
+		for (const [idx, obj] of Object.entries(rootObj)) {
+			const name = obj['name']
+			const desc = obj['desc']
+
+			const sprite = obj['sprite']
+
+			const itemObj = []
+
+			itemObj['id'] = obj.id
+			itemObj['type'] = type
+
+			if (name == undefined && desc == undefined) {
+				// Only sprite
+				const file = {
+					name: sprite['name'],
+					img: sprite['img'],
+				}
+
+				itemObj['sprite'] = file
+				itemObj['name'] = ''
+				itemObj['desc'] = ''
+			} else if ( sprite['img'] == undefined && sprite['name'] == undefined) {
+				// Only name/desc
+				itemObj['name'] = name
+				itemObj['desc'] = desc
+			} else {
+				// Both name & sprite present
+				const file = {
+					name: sprite['name'],
+					img: sprite['img'],
+				}
+
+				itemObj['sprite'] = file
+				itemObj['name'] = name
+				itemObj['desc'] = desc
+			}
+
+			//console.log('Finished item obj:', itemObj);
+
+			const idx = files.push(itemObj) - 1
+			addToItemTable(idx)
+		}
+	}
+}
+
+// Get the zip
+$(document).ready(() => {
+	$('#uploadExisting').click(() => {
+		const existingModInput = document.createElement('input')
+		existingModInput.type = 'file'
+		existingModInput.accept = '.zip'
+		existingModInput.click()
+
+		existingModInput.onchange = () => {
+			// Reset vars
+			currentParsedZip = []
+			pseudoItems = {
+				1: [],
+				2: [],
+			}
+
+			const userZip = existingModInput.files[0]
+			getZipContents(userZip)
+		}
+	})
+})
