@@ -16,13 +16,13 @@ local game = Game()
 if EID then
   -- Adds trinkets defined in trinkets
 	for _, trinket in ipairs(trinkets) do
-		local EIDdescription = EID:getDescriptionObj(5, 350, trinket[1]).Description
+		local EIDdescription = EID:getDescriptionData(5, 350, trinket[1])[3]
 		EID:addTrinket(trinket[1], EIDdescription, trinket[2], "en_us")
 	end
 
   -- Adds items defined in items
   for _, item in ipairs(items) do
-		local EIDdescription = EID:getDescriptionObj(5, 100, item[1]).Description
+		local EIDdescription = EID:getDescriptionData(5, 100, item[1])[3]
 		EID:addCollectible(item[1], EIDdescription, item[2], "en_us")
 	end
 end
