@@ -44,4 +44,4 @@ For any problems with the app, feel free to submit an issue or DM me on discord
 - [JSZip](https://github.com/Stuk/jszip)
 - [Bulma](https://github.com/jgthms/bulma)
 - [bulma-prefers-dark](https://github.com/jloh/bulma-prefers-dark)
-- [Font Awesome](https://fontawesome.com/)
+- [Pictogrammers ](https://github.com/Templarian/MaterialDesign)

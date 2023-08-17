@@ -42,15 +42,20 @@ export function addToItemTable(idx) {
 	const span = document.createElement('span')
 	span.classList.add('icon', 'is-small')
 
-	const icon = document.createElement('i')
-	icon.classList.add('fab', 'fa-solid', 'fa-trash')
-	icon.setAttribute('aria-hidden', 'true')
+	const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+	iconSvg.setAttribute('width', '24')
+	iconSvg.setAttribute('height', '24')
+	iconSvg.setAttribute('viewBox', '0 0 24 24')
+
+	const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+	iconPath.setAttribute('fill', 'currentColor')
+	iconPath.setAttribute('d', 'M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12Z')
 
 	const btn = document.createElement('button')
 	btn.classList.add('button', 'is-small', 'delete-button')
 
-	span.appendChild(icon)
-	btn.appendChild(span)
+	iconSvg.appendChild(iconPath)
+	btn.appendChild(iconSvg)
 
 	actionsCell.appendChild(btn)
 
@@ -76,12 +81,18 @@ export function addToItemTable(idx) {
 	spriteCell.appendChild(emptyImg)
 
 	// Sprite Delete Button
-	const spriteSpan = document.createElement('span')
-	spriteSpan.classList.add('icon', 'is-small')
+	const spriteIconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+	spriteIconSvg.setAttribute('width', '24')
+	spriteIconSvg.setAttribute('height', '24')
+	spriteIconSvg.setAttribute('viewBox', '0 0 24 24')
 
-	const spriteIcon = document.createElement('i')
-	spriteIcon.classList.add('fab', 'fa-solid', 'fa-trash')
-	spriteIcon.setAttribute('aria-hidden', 'true')
+	const spriteIconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+	spriteIconPath.setAttribute('fill', 'currentColor')
+	spriteIconPath.setAttribute('d', 'M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12Z')
+
+	spriteIconSvg.appendChild(spriteIconPath)
+
+	// spriteIcon.classList.add('fab', 'fa-solid', 'fa-trash')
 
 	const spriteDeleteBtn = document.createElement('button')
 	spriteDeleteBtn.classList.add('button', 'is-small')
@@ -92,8 +103,7 @@ export function addToItemTable(idx) {
 		spriteDeleteBtn.style.display = 'none'
 	}
 
-	spriteSpan.appendChild(spriteIcon)
-	spriteDeleteBtn.appendChild(spriteSpan)
+	spriteDeleteBtn.appendChild(spriteIconSvg)
 
 	spriteCell.appendChild(spriteDeleteBtn)
 
