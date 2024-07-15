@@ -1,7 +1,7 @@
-import item_names from '../../data/item_idtoname.json' assert {type: 'json'}
-import trinket_names from '../../data/trinket_idtoname.json' assert {type: 'json'}
-import item_gfxs from '../../data/item_gfxs.json' assert {type: 'json'}
-import trinket_gfxs from '../../data/trinket_gfxs.json' assert {type: 'json'}
+import item_names from '../../data/item_idtoname.json' with {type: 'json'}
+import trinket_names from '../../data/trinket_idtoname.json' with {type: 'json'}
+import item_gfxs from '../../data/item_gfxs.json' with {type: 'json'}
+import trinket_gfxs from '../../data/trinket_gfxs.json' with {type: 'json'}
 
 export const names = {
 	1: item_names,

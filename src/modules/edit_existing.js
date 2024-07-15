@@ -1,5 +1,5 @@
-import item_gfxs from '../../data/item_gfxs.json' assert {type: 'json'}
-import trinket_gfxs from '../../data/trinket_gfxs.json' assert {type: 'json'}
+import item_gfxs from '../../data/item_gfxs.json' with {type: 'json'}
+import trinket_gfxs from '../../data/trinket_gfxs.json' with {type: 'json'}
 
 import { Item } from "./classes.js"
 import { ItemType, files } from "./core.js"
